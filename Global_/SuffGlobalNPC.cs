@@ -15,12 +15,19 @@ namespace ExpiryMode.Global_
 {
     public class SuffGlobalNPC : GlobalNPC
     {
+        /// <summary>
+        /// NPC Force field bad life regen
+        /// </summary>
+        public bool badLifeRegen_InForceField = false;
+        public override bool CloneNewInstances => true;
+        public override bool InstancePerEntity => true;
         public override bool CheckDead(NPC npc)
         {
             return true;
         }
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
+            Player player = Main.player[Main.myPlayer];
             if (SuffWorld.ExpiryModeIsActive)
             {
                 #region !Boss regen
@@ -59,6 +66,22 @@ namespace ExpiryMode.Global_
                     npc.lifeRegen += 18;
                 }
                 #endregion
+            }
+            if (!player.brainOfConfusion && Main.player[Main.myPlayer].GetModPlayer<InfiniteSuffPlayer>().wearingForceField && npc.CanBeChasedBy() && /*Collision.CanHitLine(player.Center, player.width, player.height, npc.Center, npc.width, npc.height) &&*/ !npc.friendly && npc.Distance(Main.player[Main.myPlayer].Center) <= 100f)
+            {
+                npc.lifeRegen = -16;
+                if (Main.GameUpdateCount % 20 == 0)
+                {
+                    Dust.NewDust(npc.Top, npc.width, npc.height, DustID.Electric);
+                }
+            }
+            if (player.brainOfConfusion && Main.player[Main.myPlayer].GetModPlayer<InfiniteSuffPlayer>().wearingForceField && npc.CanBeChasedBy() && /*Collision.CanHitLine(player.Center, player.width, player.height, npc.Center, npc.width, npc.height) &&*/ !npc.friendly && npc.Distance(Main.player[Main.myPlayer].Center) <= 125f)
+            {
+                npc.lifeRegen = -24;
+                if (Main.GameUpdateCount % 15 == 0)
+                {
+                    Dust.NewDust(npc.Top, npc.width, npc.height, DustID.Electric);
+                }
             }
         }
         public override void BuffTownNPC(ref float damageMult, ref int defense)
@@ -393,8 +416,8 @@ namespace ExpiryMode.Global_
             {
                 if (player.ZoneDungeon)
                 {
-                    spawnRate = (spawnRate / 3);
-                    maxSpawns = (maxSpawns / 3);
+                    spawnRate = spawnRate / 3;
+                    maxSpawns = maxSpawns / 3;
                 }
                 else
                 {

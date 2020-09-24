@@ -15,23 +15,17 @@ using ExpiryMode.Util;
 using ExpiryMode.Global_;
 using ExpiryMode.Items.Weapons.ExpiryExclusive;
 using ExpiryMode.Items.Weapons.Guns;
+using Microsoft.Xna.Framework;
 
 namespace ExpiryMode.Mod_
 {
     public class InfiniteSuffPlayer : ModPlayer
     {
+        public bool inForceField = false;
         /// <summary>
         /// Wearing force field?
         /// </summary>
         public bool wearingForceField = false;
-        /*if (this.isWearingVoltaicCanister)
-
-            {
-            for (int i = 0; i < 180; i++)
-            {
-                Dust.NewDustPerfect(base.player.Center + Utils.RotatedBy(new Vector2(600f, 0f), (double)MathHelper.ToRadians((float)(i * 2)), default(Vector2)), 20, null, 0, new Color(255, 255, 255), 0.5f).noGravity = true;
-            }
-        }*/ // Code note!
         /// <summary>
         /// Igniter is equipped
         /// </summary>
@@ -87,26 +81,24 @@ namespace ExpiryMode.Mod_
             primeUtils = false;
             igniter = false;
             igniterNoVisual = false;
+            wearingForceField = false;
         }
         public override bool PreItemCheck()
         {
             Item item = player.HeldItem;
-            if (item.useAmmo == AmmoID.Bullet)
+            if (item.useAmmo == AmmoID.Bullet && player.HeldItem.type > ItemID.None)
             {
                 isGun = true;
             }
-            if (bumpStock)
+            if (bumpStock && item.useAmmo == AmmoID.Bullet && !item.autoReuse && player.HeldItem.type > ItemID.None)
             {
-                if (item.useAmmo == AmmoID.Bullet && !item.autoReuse)
-                {
-                    item.autoReuse = true;
-                }
+                item.autoReuse = true;
             }
-            else if (isGun && !bumpStock)
+            else if (player.HeldItem.type > ItemID.None)
             {
                 player.HeldItem.autoReuse = player.HeldItem.GetGlobalItem<OnTerrariaHook>().defAutoReuse;
             }
-            if (igniter)
+            if (igniter && player.HeldItem.type > ItemID.None)
             {
                 if (item.type == ItemType<SlimyBlunderbuss>())
                 {
@@ -180,7 +172,7 @@ namespace ExpiryMode.Mod_
         public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff) { }
         public override void UpdateBiomeVisuals()
         {
-             player.ManageSpecialBiomeVisuals("InfniteSuffering:RadiatedBiomeSky", ZoneRadiated);
+            player.ManageSpecialBiomeVisuals("InfniteSuffering:RadiatedBiomeSky", ZoneRadiated);
         }
         public override void ModifyNursePrice(NPC nurse, int health, bool removeDebuffs, ref int price)
         {
@@ -207,7 +199,7 @@ namespace ExpiryMode.Mod_
                     removeDebuffs = false;
                 }
             }
-        }   
+        }
         public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath)
         {
             Item item1 = new Item();
@@ -223,6 +215,71 @@ namespace ExpiryMode.Mod_
         }
         public override void PostUpdate()
         {
+            if (wearingForceField && !player.brainOfConfusion)
+            {
+                for (int i = 0; i < 180; i++)
+                {
+                    Dust.NewDustPerfect(player.Center + Utils.RotatedBy(new Vector2(100f, 0f), MathHelper.ToRadians(i * 2), default), 20, null, 0, new Color(255, 255, 255), 0.25f).noGravity = true;
+                }
+                for (int projectile_iteration = 0; projectile_iteration < Main.maxProjectiles; projectile_iteration++)
+                {
+                    Projectile projectile = Main.projectile[projectile_iteration];
+                    for (int npc_iteration = 0; npc_iteration < Main.maxNPCs; npc_iteration++)
+                    {
+                        NPC npc = Main.npc[npc_iteration];
+                        if (projectile.active
+                            && projectile.hostile && projectile.damage < 35
+                            && projectile.Distance(player.Center) <= 100f
+                            || npc.type == NPCID.WaterSphere
+                            && npc.Distance(player.Center) <= 100f
+                            || npc.type == NPCID.ChaosBall
+                            && npc.Distance(player.Center) <= 100f)
+                        {
+                            projectile.Kill();
+                            for (int dustTimes = 0; dustTimes <= 3; dustTimes++)
+                            {
+                                Dust.NewDust(projectile.Center, projectile.width, projectile.height, DustID.Electric);
+                            }
+                        }
+                    }
+                }
+                for (int npc_iteration = 0; npc_iteration < Main.maxNPCs; npc_iteration++)
+                {
+                    NPC npc = Main.npc[npc_iteration];
+                    if (npc.type != NPCID.WaterSphere
+                            && npc.Distance(player.Center) <= 125f
+                            || npc.type != NPCID.ChaosBall
+                            && npc.Distance(player.Center) <= 125f)
+                    {
+                    }
+                }
+            }
+            if (wearingForceField && player.brainOfConfusion)
+            {
+                for (int i = 0; i < 180; i++)
+                {
+                    Dust.NewDustPerfect(player.Center + Utils.RotatedBy(new Vector2(125f, 0f), MathHelper.ToRadians(i * 2), default), 20, null, 0, new Color(255, 255, 255), 0.25f).noGravity = true;
+                }
+                for (int projectile_iteration = 0; projectile_iteration < Main.maxProjectiles; projectile_iteration++)
+                {
+                    Projectile projectile = Main.projectile[projectile_iteration];
+                    for (int npc_iteration = 0; npc_iteration < Main.maxNPCs; npc_iteration++)
+                    {
+                        NPC npc = Main.npc[npc_iteration];
+                        if (projectile.active
+                            && projectile.hostile && projectile.damage < 55
+                            && projectile.Distance(player.Center) <= 125f
+                            || npc.type == NPCID.WaterSphere
+                            && npc.Distance(player.Center) <= 125f
+                            || npc.type == NPCID.ChaosBall
+                            && npc.Distance(player.Center) <= 125f)
+                        {
+                            npc.active = false;
+                        }
+                    }
+                }
+            }
+
             if (ZoneRadiated && player.whoAmI == Main.myPlayer)
             {
                 Main.sunTexture = GetTexture("ExpiryMode/Assets/RottenSun");
@@ -549,7 +606,7 @@ namespace ExpiryMode.Mod_
         {
             if (SuffWorld.ExpiryModeIsActive)
             {
-                if(Main.npc.Any(n => n.active && n.boss))
+                if (Main.npc.Any(n => n.active && n.boss))
                 {
                     chatText = "I'm too frightened by that boss to heal you!";
                     return false;
@@ -581,5 +638,10 @@ namespace ExpiryMode.Mod_
                 }
             }
         }
+    }
+    public class NPCInstances : GlobalNPC
+    {
+        public override bool InstancePerEntity => true;
+        public override bool CloneNewInstances => true;
     }
 }

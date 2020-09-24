@@ -3,6 +3,8 @@ using Terraria.ModLoader;
 using ExpiryMode.Global_;
 using ExpiryMode.Mod_;
 using Terraria.ID;
+using ExpiryMode.Items.Weapons.ExpiryExclusive;
+using ExpiryMode.Items.Weapons.Guns;
 
 namespace ExpiryMode.Items.Equippables.Accessories
 {
@@ -11,7 +13,7 @@ namespace ExpiryMode.Items.Equippables.Accessories
 		public override void SetStaticDefaults() 
 		{
 			DisplayName.SetDefault("Igniter");
-			Tooltip.SetDefault("Makes you fire Slimy Bluderbuss faster\nHide visual to stop all recoil\n'I am SPEED!'");
+			Tooltip.SetDefault("Makes you fire blunderbusses faster\nHide visual to stop all recoil\n'I am SPEED!'");
 		}
         public override void SetDefaults()
         {
@@ -27,6 +29,9 @@ namespace ExpiryMode.Items.Equippables.Accessories
             if (hideVisual)
             {
                 player.GetModPlayer<InfiniteSuffPlayer>().igniterNoVisual = true;
+            }
+            if (item.type == ModContent.ItemType<SlimyBlunderbuss>() || item.type == ModContent.ItemType<Blunderbuss>())
+            {
             }
         }
     }

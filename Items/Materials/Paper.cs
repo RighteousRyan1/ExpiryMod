@@ -9,7 +9,7 @@ namespace ExpiryMode.Items.Materials
 		public override void SetStaticDefaults() 
 		{
 			DisplayName.SetDefault("Paper");
-			Tooltip.SetDefault($"Looks like a doctor wrote it");
+			Tooltip.SetDefault("Looks like a doctor wrote it");
 		}
 
         public override void SetDefaults()
@@ -23,7 +23,7 @@ namespace ExpiryMode.Items.Materials
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Wood, 1);
-            recipe.SetResult(ItemType<Paper>(), 3);
+            recipe.SetResult(this, 3);
             recipe.AddRecipe();
         }
     }

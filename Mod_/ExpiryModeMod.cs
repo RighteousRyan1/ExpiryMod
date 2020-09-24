@@ -122,7 +122,7 @@ namespace ExpiryMode.Mod_
                 }
                 string text5 = $"Join the Expiry Mode discord server!";
                 string text6 = $"Click the top line to join. We are waiting!";
-                string text7 = $"Expiry Mode v{ModLoader.GetMod("ExpiryMode").Version}";
+                string text7 = $"Expiry Mod v{ModLoader.GetMod("ExpiryMode").Version}";
                 Vector2 origin2 = fontMouseText.MeasureString(text5);
                 origin2.X *= 0.5f;
                 origin2.Y *= 0.5f;

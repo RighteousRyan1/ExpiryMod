@@ -30,21 +30,8 @@ namespace ExpiryMode.Global_
                 projectile.penetrate = 1;
             }
         }
-        public override bool CanHitPlayer(Projectile projectile, Player target)
-        {
-            if (projectile.owner == Main.myPlayer)
-            {
-                 return false;
-            }
-            return base.CanHitPlayer(projectile, target);
-        }
         public override void PostAI(Projectile projectile)
         {
-            if (projectile.owner == Main.myPlayer)
-            {
-                projectile.hostile = false;
-                projectile.friendly = true;
-            }
             base.PostAI(projectile);
         }
         public override void ModifyHitPlayer(Projectile projectile, Player target, ref int damage, ref bool crit)

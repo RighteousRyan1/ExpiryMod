@@ -59,8 +59,8 @@ namespace ExpiryMode.Global_
         }
         public override void OpenVanillaBag(string context, Player player, int arg)
         {
-            // Final Notes: Bosses Done: King Slime, Eye of Cthulhu, Skeletron, All Mech bosses
-            // Undone: Brain of Cthulhu, Queen Bee, Wall of Flesh, Duke Fishron, Plantera, Golem, Lunatic Cultist, Moon Lord
+            // Final Notes: Bosses Done: King Slime, Eye of Cthulhu, Skeletron, All Mech bosses, Brain of Cthulhu
+            // Undone: Queen Bee, Wall of Flesh, Duke Fishron, Plantera, Golem, Lunatic Cultist, Moon Lord
             if (SuffWorld.ExpiryModeIsActive)
             {
                 if (context == "bossBag" && arg == ItemID.TwinsBossBag)
@@ -257,6 +257,16 @@ namespace ExpiryMode.Global_
                     if (line9.mod == "Terraria" && line9.Name == "Tooltip0")
                     {
                         line9.text = $"Increases length of invincibility\nReduces the effects of the Radiance\nDoesn't Work for as long at it is raining in the Radiance";
+                    }
+                }
+            }
+            if (item.type == ItemID.BrainOfConfusion)
+            {
+                foreach (TooltipLine line10 in tooltips)
+                {
+                    if (line10.mod == "Terraria" && line10.Name == "Tooltip0")
+                    {
+                        line10.text = $"May confuse nearby enemies after being struck\nStrenghens the power of the Brain Bulwark";
                     }
                 }
             }
