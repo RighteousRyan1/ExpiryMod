@@ -25,6 +25,10 @@ namespace ExpiryMode.Global_
         // ask 4mbr0s3 2 for help here :ech:
         public override void SetDefaults(Projectile projectile)
         {
+            if (projectile.type == ProjectileID.CannonballFriendly)
+            {
+                projectile.penetrate = 1;
+            }
         }
         public override bool CanHitPlayer(Projectile projectile, Player target)
         {

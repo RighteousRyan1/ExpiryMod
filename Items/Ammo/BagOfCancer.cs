@@ -59,7 +59,7 @@ namespace ExpiryMode.Items.Ammo
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemType<RadiantArrowItem>(), 3996);
 			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this, 50);
+			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}	
 	}

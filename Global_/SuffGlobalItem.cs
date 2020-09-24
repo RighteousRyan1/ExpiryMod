@@ -13,6 +13,9 @@ using Microsoft.Xna.Framework.Graphics;
 using ExpiryMode.Items.Equippables.Accessories;
 using System;
 using ExpiryMode.Projectiles.ClonedInstances;
+using ExpiryMode.Items.Weapons.ExpiryExclusive;
+using ExpiryMode.Tiles;
+using ExpiryMode.Items.Blocks;
 
 namespace ExpiryMode.Global_
 {
@@ -56,6 +59,8 @@ namespace ExpiryMode.Global_
         }
         public override void OpenVanillaBag(string context, Player player, int arg)
         {
+            // Final Notes: Bosses Done: King Slime, Eye of Cthulhu, Skeletron, All Mech bosses
+            // Undone: Brain of Cthulhu, Queen Bee, Wall of Flesh, Duke Fishron, Plantera, Golem, Lunatic Cultist, Moon Lord
             if (SuffWorld.ExpiryModeIsActive)
             {
                 if (context == "bossBag" && arg == ItemID.TwinsBossBag)
@@ -74,11 +79,19 @@ namespace ExpiryMode.Global_
                 {
                     player.QuickSpawnItem(ItemType<PrimeUtils>());
                 }
+                if (context == "bossBag" && arg == ItemID.KingSlimeBossBag)
+                {
+                    player.QuickSpawnItem(ItemType<SlimyBlunderbuss>());
+                }
+                if (context == "bossBag" && arg == ItemID.EyeOfCthulhuBossBag)
+                {
+                    player.QuickSpawnItem(ItemType<Igniter>());
+                }
                 if (context == "crate" && arg == ItemID.WoodenCrate)
                 {
                     if (Main.hardMode)
                     {
-                        player.QuickSpawnItem(ItemType<SkeletronArm>(), Main.rand.Next(2, 5));
+                        player.QuickSpawnItem(ItemType<RadianiteOreItem>(), Main.rand.Next(2, 5));
                     }
                 }
                 if (context == "bossBag")
@@ -94,9 +107,12 @@ namespace ExpiryMode.Global_
                     }
                     else if (Main.rand.Next(20) == 0)
                     {
-                        player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticDome>());
-                        player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticVest>());
-                        player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticReflectiveBoots>());
+                        if (Main.hardMode)
+                        {
+                            player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticDome>());
+                            player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticVest>());
+                            player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticReflectiveBoots>());
+                        }
                     }
                 }
             }
@@ -399,7 +415,14 @@ namespace ExpiryMode.Global_
     }
     public class OnTerrariaHook : GlobalItem
     {
+        /// <summary>
+        /// Resorts to old autoReuse defaults
+        /// </summary>
         public bool defAutoReuse;
+        /// <summary>
+        /// Resorts to the automatically set reuseDelay defaults
+        /// </summary>
+        public int defReuseDelayInt;
         public override bool InstancePerEntity => true;
         public override bool CloneNewInstances => true;
     }

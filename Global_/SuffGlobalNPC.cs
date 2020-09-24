@@ -191,11 +191,11 @@ namespace ExpiryMode.Global_
                 }
                 if (Main.hardMode && Main.expertMode && !npc.friendly)
                 {
-                    npc.lifeMax = (int)(npc.lifeMax * 2f);
+                    npc.lifeMax = (int)(npc.lifeMax * 1.8f);
                 }
                 else if (!Main.hardMode && Main.expertMode && !npc.friendly)
                 {
-                    npc.lifeMax = (int)(npc.lifeMax * 1.6f);
+                    npc.lifeMax = (int)(npc.lifeMax * 1.4f);
                 }
             }
             #endregion

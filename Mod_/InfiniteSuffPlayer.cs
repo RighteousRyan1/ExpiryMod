@@ -13,22 +13,47 @@ using ExpiryMode.Items.Fish.Quest;
 using System.Linq;
 using ExpiryMode.Util;
 using ExpiryMode.Global_;
+using ExpiryMode.Items.Weapons.ExpiryExclusive;
+using ExpiryMode.Items.Weapons.Guns;
 
 namespace ExpiryMode.Mod_
 {
     public class InfiniteSuffPlayer : ModPlayer
     {
+        /// <summary>
+        /// Wearing force field?
+        /// </summary>
+        public bool wearingForceField = false;
+        /*if (this.isWearingVoltaicCanister)
+
+            {
+            for (int i = 0; i < 180; i++)
+            {
+                Dust.NewDustPerfect(base.player.Center + Utils.RotatedBy(new Vector2(600f, 0f), (double)MathHelper.ToRadians((float)(i * 2)), default(Vector2)), 20, null, 0, new Color(255, 255, 255), 0.5f).noGravity = true;
+            }
+        }*/ // Code note!
+        /// <summary>
+        /// Igniter is equipped
+        /// </summary>
+        public bool igniter = false;
+        /// <summary>
+        /// Igniter, but hideVisual is true
+        /// </summary>
+        public bool igniterNoVisual = false;
+        /// <summary>
+        /// Prime Utils is equipped
+        /// </summary>
         public bool primeUtils = false;
         /// <summary>
-        /// Determines whether the Prismatic Head is equipped.
+        /// Determines whether the Prismatic Head is equipped
         /// </summary>
         public bool accPrisHead = false;
         /// <summary>
-        /// Determines whether the Prismatic Body is equipped.
+        /// Determines whether the Prismatic Body is equipped
         /// </summary>
         public bool accPrisBody = false;
         /// <summary>
-        /// Determines whether the Prismatic Legs is equipped.
+        /// Determines whether the Prismatic Legs is equipped
         /// </summary>
         public bool accPrisLegs = false;
         /// <summary>
@@ -60,6 +85,8 @@ namespace ExpiryMode.Mod_
             bumpStock = false;
             mechScarf = false;
             primeUtils = false;
+            igniter = false;
+            igniterNoVisual = false;
         }
         public override bool PreItemCheck()
         {
@@ -77,8 +104,41 @@ namespace ExpiryMode.Mod_
             }
             else if (isGun && !bumpStock)
             {
-                player.HeldItem.autoReuse = player.HeldItem.GetGlobalItem<OnTerrariaHook>().defAutoReuse; // This is really faulty, if anyone can fix it please let me know. - Ryan
-                // Make this check only apply to certain weapons, such as the weapons that get affected by this monstrosity
+                player.HeldItem.autoReuse = player.HeldItem.GetGlobalItem<OnTerrariaHook>().defAutoReuse;
+            }
+            if (igniter)
+            {
+                if (item.type == ItemType<SlimyBlunderbuss>())
+                {
+                    item.useAnimation = 30;
+                    item.useTime = 30;
+                }
+            }
+            if (!igniter)
+            {
+                if (item.type == ItemType<SlimyBlunderbuss>())
+                {
+                    item.useAnimation = 50;
+                    item.useTime = 50;
+                }
+            }
+            if (igniter)
+            {
+                if (item.type == ItemType<Blunderbuss>())
+                {
+                    item.useAnimation = 85;
+                    item.useTime = 85;
+                }
+            }
+            else if (!igniter)
+            {
+                //player.HeldItem.reuseDelay = player.HeldItem.GetGlobalItem<OnTerrariaHook>().defReuseDelayInt;
+                if (item.type == ItemType<Blunderbuss>())
+                {
+                    item.useAnimation = 110;
+                    item.useTime = 110;
+                }
+
             }
             return base.PreItemCheck();
         }
@@ -88,10 +148,11 @@ namespace ExpiryMode.Mod_
             {
                 return 0.8f;
             }
-            else
+            if (igniter && item.type == ItemType<SlimyBlunderbuss>())
             {
-                return 1f;
+                return 0.6f;
             }
+            return 1f;
         }
         public static long GetSavings(Player player)
         {

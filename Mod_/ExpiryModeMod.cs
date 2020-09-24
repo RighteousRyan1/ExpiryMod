@@ -203,6 +203,7 @@ namespace ExpiryMode.Mod_
             IL.Terraria.Main.DrawMenu += HookMenuSplash;
             IL.Terraria.Main.DoDraw += HookItemTextDraw;
             On.Terraria.Item.SetDefaults += Item_SetDefaults;
+            On.Terraria.Item.SetDefaults += Item_SetDefaults1;
             if (!dedServ)
             {
                 On.Terraria.Lang.GetRandomGameTitle += Lang_GetRandomGameTitle;
@@ -225,6 +226,18 @@ namespace ExpiryMode.Mod_
             On.Terraria.Main.MouseText += Main_MouseText;
             On.Terraria.ItemText.Update += ItemText_Update;
         }
+        /// <summary>
+        /// oh yeah, reowrking autoReuse
+        /// </summary>
+        /// <param name="orig"></param>
+        /// <param name="self"></param>
+        /// <param name="Type"></param>
+        /// <param name="noMatCheck"></param>
+        private void Item_SetDefaults1(On.Terraria.Item.orig_SetDefaults orig, Item self, int Type, bool noMatCheck)
+        {
+            orig(self, Type, noMatCheck);
+            self.GetGlobalItem<OnTerrariaHook>().defAutoReuse = self.autoReuse;
+        }
 
         /*private void Projectile_SetDefaults(On.Terraria.Projectile.orig_SetDefaults orig, Projectile self, int Type)
         {
@@ -243,7 +256,7 @@ namespace ExpiryMode.Mod_
         private void Item_SetDefaults(On.Terraria.Item.orig_SetDefaults orig, Item self, int Type, bool noMatCheck)
         {
             orig(self, Type, noMatCheck);
-            self.GetGlobalItem<OnTerrariaHook>().defAutoReuse = self.autoReuse;
+            self.GetGlobalItem<OnTerrariaHook>().defReuseDelayInt = self.reuseDelay;
         }
 
         private void HookItemTextDraw(ILContext il)
