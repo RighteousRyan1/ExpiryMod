@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 using ExpiryMode.Tiles.Trees;
 using static Terraria.ModLoader.ModContent;
+using ExpiryMode.Util;
 
 namespace ExpiryMode.Tiles
 {

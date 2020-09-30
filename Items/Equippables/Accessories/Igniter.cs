@@ -32,6 +32,7 @@ namespace ExpiryMode.Items.Equippables.Accessories
             }
             if (item.type == ModContent.ItemType<SlimyBlunderbuss>() || item.type == ModContent.ItemType<Blunderbuss>())
             {
+                // Use later?????
             }
         }
     }

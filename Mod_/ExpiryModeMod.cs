@@ -26,11 +26,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.UI.Chat;
 using ExpiryMode.Global_;
+using System.Security.Cryptography.X509Certificates;
+using ExpiryMode.Util;
 
 namespace ExpiryMode.Mod_
 {
     public class ExpiryModeMod : Mod
     {
+        public bool MagnetRange_IsInfinite = false;
         private bool stopTitleMusic;
         private ManualResetEvent titleMusicStopped;
         private int customTitleMusicSlot;
@@ -52,6 +55,9 @@ namespace ExpiryMode.Mod_
                 }
                 return customTitleMusicSlot;
             });
+        }
+        public override void PostUpdateEverything()
+        {
         }
         private void MenuMusicSet()
         {
@@ -183,7 +189,6 @@ namespace ExpiryMode.Mod_
         }
         public static ModHotKey ShiftIsPressed;
         public override void AddRecipes() { }
-        public override void PostUpdateEverything() { }
         public override void Unload()
         {
             ShiftIsPressed = null;
@@ -354,31 +359,40 @@ namespace ExpiryMode.Mod_
 
         private string Lang_GetRandomGameTitle(On.Terraria.Lang.orig_GetRandomGameTitle orig)
         {
-            string ScreenLoadChance = "tModLoader: Terraria";
+            string ScreenLoadChance = "tModLoader: Wrong Name?";
 
-            switch (rand.Next(7))
+            switch (rand.Next(10))
             {
                 default:
-                    ScreenLoadChance = "tModLoader: Ever heard of a guy called pollen__?";
+                    ScreenLoadChance = "Terraria: Ever heard of a guy called pollen__?";
                     break;
                 case 1:
-                    ScreenLoadChance = "tModLoader: You've Been Distracted!";
+                    ScreenLoadChance = "Terraria: You've Been Distracted!";
                     break;
                 case 2:
-                    ScreenLoadChance = "tModLoader: Close the application";
+                    ScreenLoadChance = "Terraria: Close the application";
                     break;
                 case 3:
-                    ScreenLoadChance = "tStandalone: Wait, wrong app";
+                    ScreenLoadChance = "tStandalone: Wait. Stevie?";
                     break;
                 case 4:
-                    ScreenLoadChance = "tModLoader: what.ogg is the best song";
+                    ScreenLoadChance = "Terraria: what.ogg is the best song";
                     break;
                 case 5:
-                    ScreenLoadChance = "tModLoader_1.4.0.5: Wait, wrong version";
+                    ScreenLoadChance = "Terraria 1.4.0.5: Wait, wrong version";
                     break;
                 case 6:
                     if (ModLoader.GetMod("CalamityMod") != null)
-                        ScreenLoadChance = "tModLoader: Calamity isn't really that good";
+                        ScreenLoadChance = "Terraria: Calameme";
+                    break;
+                case 7:
+                    ScreenLoadChance = "Terraria: Why is there boss music";
+                    break;
+                case 8:
+                    ScreenLoadChance = "Terraria: Expiry Mode is surperior";
+                    break;
+                case 9:
+                    ScreenLoadChance = "Terraria: Fun times await all";
                     break;
             }
             return ScreenLoadChance;
@@ -668,7 +682,7 @@ namespace ExpiryMode.Mod_
             }
             else if (newItem.rare == ExpiryRarity.Expiry)
             {                                                                                                                // Timer between color swaps
-                itemText[num4].color = Color.Lerp(Color.DarkGreen, Color.Lime, (float)(Math.Sin(Main.GameUpdateCount / 20f) + 1f) / 2f);
+                itemText[num4].color = Color.Lerp(Color.DarkOrange, Color.Firebrick, (float)(Math.Sin(Main.GameUpdateCount / 20f) + 1f) / 2f);
             }
             rarityText[num4].rare = newItem.rare;
             itemText[num4].expert = newItem.expert;
@@ -736,7 +750,7 @@ namespace ExpiryMode.Mod_
             {
                 if (rare == ExpiryRarity.Expiry)
                 {
-                    Color baseColor = Color.Lerp(Color.DarkGreen, Color.Lime, (float)(Math.Sin(GameUpdateCount / 20f) + 1f) / 2f) * num;
+                    Color baseColor = Color.Lerp(Color.DarkOrange, Color.Firebrick, (float)(Math.Sin(Main.GameUpdateCount / 20f) + 1f) / 2f);
                     ChatManager.DrawColorCodedStringWithShadow(spriteBatch, fontMouseText, cursorText, new Vector2(X, Y), baseColor, 0f, Vector2.Zero, Vector2.One);
                 }
                 if (rare == ExpiryRarity.AcidicRarity)
@@ -816,7 +830,7 @@ namespace ExpiryMode.Mod_
             }
             if (rarityText[whoAmI].rare == ExpiryRarity.Expiry)
             {
-                itemText[whoAmI].color = Color.Lerp(Color.DarkGreen, Color.Lime, (float)(Math.Sin(GameUpdateCount / 10f) + 1f) / 2f);
+                itemText[whoAmI].color = Color.Lerp(Color.DarkOrange, Color.Firebrick, (float)(Math.Sin(Main.GameUpdateCount / 20f) + 1f) / 2f);
             }
             bool flag = false;
             string text3 = itemText[whoAmI].name;
@@ -998,7 +1012,6 @@ namespace ExpiryMode.Mod_
                         throw new UsageException($"{lifeAmt} is not a valid integer.");
                     }
                 }
-
                 int lifeInt = 1;
                 if (args.Length >= 2)
                 {
@@ -1012,6 +1025,7 @@ namespace ExpiryMode.Mod_
                 {
                     player.statLifeMax = type;
                 }
+
             }
         }
         /// <summary>
@@ -1076,16 +1090,49 @@ namespace ExpiryMode.Mod_
                 }
             }
         }
+        public class MagnetRange : ModCommand
+        {
+            public override CommandType Type
+                => CommandType.Chat;
+
+            public override string Command
+                => "buffMagnet";
+
+            public override string Usage
+                => "/buffMagnet";
+
+            public override string Description
+                => "Toggle infnite NPC magnet range!";
+
+            public override void Action(CommandCaller caller, string input, string[] args)
+            {
+                Player player = Main.player[myPlayer];
+                if (!player.HasItem(ItemType<CommandItem>()))
+                {
+                    NewText("This command can only be used while debugging!", Color.Red);
+                }
+                if (player.HasItem(ItemType<CommandItem>()) && !GetInstance<ExpiryModeMod>().MagnetRange_IsInfinite)
+                {
+                    GetInstance<ExpiryModeMod>().MagnetRange_IsInfinite = true;
+                    NewText("The NPC Magnet now has infnite range.", Color.Coral);
+                }
+                else if (player.HasItem(ItemType<CommandItem>()) && GetInstance<ExpiryModeMod>().MagnetRange_IsInfinite)
+                {
+                    GetInstance<ExpiryModeMod>().MagnetRange_IsInfinite = false;
+                    NewText("The NPC Magnet now back to normal range.", Color.Coral);
+                }
+            }
+        }
         public class BlackJack : ModCommand
         {
             public override CommandType Type
                 => CommandType.Chat;
 
             public override string Command
-                => "bj";
+                => "blackjack";
 
             public override string Usage
-                => "/bj";
+                => "/blackjack";
 
             public override string Description
                 => "Play some good ol' blackjack!";
@@ -1209,7 +1256,7 @@ namespace ExpiryMode.Mod_
 
             if (item.rare == ExpiryRarity.Expiry)
             {
-                name.overrideColor = Color.Lerp(Color.DarkGreen, Color.Lime, (float)(Math.Sin(Main.GameUpdateCount / 20f) + 1f) / 2f);
+                name.overrideColor = Color.Lerp(Color.DarkOrange, Color.Firebrick, (float)(Math.Sin(Main.GameUpdateCount / 20f) + 1f) / 2f);
             }
             else if (item.rare == ExpiryRarity.AcidicRarity)
             {

@@ -24,23 +24,11 @@ namespace ExpiryMode.Items.Equippables.Vanity.Prismatic
             item.rare = ExpiryRarity.PrismaticRarity;
             item.vanity = true;
         }
-        public override void DrawArmorColor(Player drawPlayer, float shadow, ref Color color, ref int glowMask, ref Color glowMaskColor)
+        public override void UpdateEquip(Player player)
         {
-            color = Main.DiscoColor;
-        }
-        public override bool IsVanitySet(int head, int body, int legs)
-        {
-            return true;
-        }
-        public override void PreUpdateVanitySet(Player player)
-        {
-            Lighting.AddLight(player.Center, Main.DiscoColor.ToVector3() * 0.55f * Main.essScale);
+            player.GetModPlayer<InfiniteSuffPlayer>().accPrisHead = true;
         }
         public override void UpdateVanity(Player player, EquipType type)
-        {
-            base.UpdateVanity(player, type);
-        }
-        public override void UpdateEquip(Player player)
         {
             player.GetModPlayer<InfiniteSuffPlayer>().accPrisHead = true;
         }

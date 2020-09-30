@@ -1,3 +1,5 @@
+using ExpiryMode.Util;
+using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -31,6 +33,10 @@ namespace ExpiryMode.Items.Useables
         public override bool CanUseItem(Player player)
         {
             return !Main.raining;
+        }
+        public override Vector2? HoldoutOffset()
+        {
+            return UsefulUtils.SlightYOffset(10);
         }
         public override bool UseItem(Player player)
         {

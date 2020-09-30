@@ -16,11 +16,38 @@ using ExpiryMode.Global_;
 using ExpiryMode.Items.Weapons.ExpiryExclusive;
 using ExpiryMode.Items.Weapons.Guns;
 using Microsoft.Xna.Framework;
+using System.Runtime.CompilerServices;
+using IL.Terraria.Utilities;
+using System;
 
 namespace ExpiryMode.Mod_
 {
     public class InfiniteSuffPlayer : ModPlayer
     {
+        public bool LAndD = false;
+        /// <summary>
+        /// Hold both mice down to damage enemies inside of the field.
+        /// </summary>
+        public bool NPC_DamageLocally = false;
+        /// <summary>
+        /// Are you using the magnet?
+        /// </summary>
+        public bool MagnetActive = false;
+        /// <summary>
+        /// Attracts enemies from a set distance
+        /// </summary>
+        public bool NPC_AttractLocally = false;
+        /// <summary>
+        /// Repulses enemies from a set distance
+        /// </summary>
+        public bool NPC_RepulseLocally = false;
+        /// <summary>
+        /// Wearing the Corrupt Tooth
+        /// </summary>
+        public bool corruptTooth = false;
+        /// <summary>
+        /// Wearing Brain Bulwark
+        /// </summary>
         public bool inForceField = false;
         /// <summary>
         /// Wearing force field?
@@ -74,6 +101,24 @@ namespace ExpiryMode.Mod_
         /// Determines whether this item is a gun
         /// </summary>
         public bool isGun;
+        public override void UpdateLifeRegen()
+        {
+        }
+        public override void UpdateBadLifeRegen()
+        {
+            if (MagnetActive)
+            {
+                if (player.lifeRegen > 0)
+                {
+                    player.lifeRegen = 0;
+                }
+                player.lifeRegen -= 2 * 5;
+            }
+        }
+        public override bool Shoot(Item item, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            return base.Shoot(item, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+        }
         public override void ResetEffects()
         {
             bumpStock = false;
@@ -82,6 +127,12 @@ namespace ExpiryMode.Mod_
             igniter = false;
             igniterNoVisual = false;
             wearingForceField = false;
+            corruptTooth = false;
+            NPC_RepulseLocally = false;
+            MagnetActive = false;
+            NPC_AttractLocally = false;
+            NPC_DamageLocally = false;
+            LAndD = false;
         }
         public override bool PreItemCheck()
         {
@@ -94,7 +145,7 @@ namespace ExpiryMode.Mod_
             {
                 item.autoReuse = true;
             }
-            else if (player.HeldItem.type > ItemID.None)
+            else if (!bumpStock && player.HeldItem.type > ItemID.None)
             {
                 player.HeldItem.autoReuse = player.HeldItem.GetGlobalItem<OnTerrariaHook>().defAutoReuse;
             }
@@ -215,6 +266,31 @@ namespace ExpiryMode.Mod_
         }
         public override void PostUpdate()
         {
+            /*if (player.wet)
+            {
+                if (player.velocity.Y != 0)
+                {
+                    player.fullRotation = player.velocity.ToRotation() + (float)Math.PI / 2f;
+                }
+                else if (player.velocity.Y == 0)
+                {
+                    player.fullRotation = 0;
+                }
+            }*/ // OS Code moment (OS dont use, im not even usign ti lamffmddsasf)
+            if (NPC_RepulseLocally)
+            {
+                for (int i = 0; i < 180; i++)
+                {
+                    Dust.NewDustPerfect(Main.MouseWorld + Utils.RotatedBy(new Vector2(80f, 0f), MathHelper.ToRadians(i * 2), default), 124, null, 0, new Color(255, 0, 0), 0.6f).noGravity = true;
+                }
+            }
+            if (NPC_AttractLocally)
+            {
+                for (int i = 0; i < 180; i++)
+                {
+                    Dust.NewDustPerfect(Main.MouseWorld + Utils.RotatedBy(new Vector2(80f, 0f), MathHelper.ToRadians(i * 2), default), 124, null, 0, new Color(0, 167, 255), 0.6f).noGravity = true;
+                }
+            }
             if (wearingForceField && !player.brainOfConfusion)
             {
                 for (int i = 0; i < 180; i++)
@@ -228,7 +304,7 @@ namespace ExpiryMode.Mod_
                     {
                         NPC npc = Main.npc[npc_iteration];
                         if (projectile.active
-                            && projectile.hostile && projectile.damage < 35
+                            && projectile.hostile && projectile.damage <= 20
                             && projectile.Distance(player.Center) <= 100f
                             || npc.type == NPCID.WaterSphere
                             && npc.Distance(player.Center) <= 100f
@@ -241,16 +317,6 @@ namespace ExpiryMode.Mod_
                                 Dust.NewDust(projectile.Center, projectile.width, projectile.height, DustID.Electric);
                             }
                         }
-                    }
-                }
-                for (int npc_iteration = 0; npc_iteration < Main.maxNPCs; npc_iteration++)
-                {
-                    NPC npc = Main.npc[npc_iteration];
-                    if (npc.type != NPCID.WaterSphere
-                            && npc.Distance(player.Center) <= 125f
-                            || npc.type != NPCID.ChaosBall
-                            && npc.Distance(player.Center) <= 125f)
-                    {
                     }
                 }
             }
@@ -267,14 +333,11 @@ namespace ExpiryMode.Mod_
                     {
                         NPC npc = Main.npc[npc_iteration];
                         if (projectile.active
-                            && projectile.hostile && projectile.damage < 55
-                            && projectile.Distance(player.Center) <= 125f
-                            || npc.type == NPCID.WaterSphere
-                            && npc.Distance(player.Center) <= 125f
-                            || npc.type == NPCID.ChaosBall
-                            && npc.Distance(player.Center) <= 125f)
+                            && projectile.hostile && projectile.damage <= 30
+                            && projectile.Distance(player.Center) <= 125f) 
                         {
-                            npc.active = false;
+                            projectile.Kill();
+                            Dust.NewDust(projectile.Center, projectile.width, projectile.height, DustID.Electric);
                         }
                     }
                 }
@@ -598,6 +661,27 @@ namespace ExpiryMode.Mod_
                     {
                         damageSource = PlayerDeathReason.ByCustomReason($"The forever burning flames of hell consumed {player.name} piece by piece.");
                     }
+                }
+                if (MagnetActive)
+                {
+                        switch (Main.rand.Next(5))
+                        {
+                            default:
+                                player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} has an overall net charge of 0."), 0, 0);
+                                break;
+                            case 1:
+                                player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} had all the electrons sapped out of them."), 0, 0);
+                                break;
+                            case 2:
+                                player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} had all the protons sapped out of them."), 0, 0);
+                                break;
+                            case 3:
+                                player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} is no longer charged."), 0, 0);
+                                break;
+                            case 4:
+                                player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} channeled for too long."), 0, 0);
+                                break;
+                        }
                 }
                 return true;
             }

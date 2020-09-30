@@ -10,60 +10,73 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using System.Linq;
 using System.Net;
+using ExpiryMode.Util;
+using System;
+using ExpiryMode.Items.Useables;
+using Terraria.DataStructures;
 
 namespace ExpiryMode.Global_
 {
     public class SuffGlobalNPC : GlobalNPC
     {
-        /// <summary>
-        /// NPC Force field bad life regen
-        /// </summary>
-        public bool badLifeRegen_InForceField = false;
         public override bool CloneNewInstances => true;
         public override bool InstancePerEntity => true;
-        public override bool CheckDead(NPC npc)
-        {
-            return true;
-        }
+
+        public int counterToCellSplit;
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
+
             Player player = Main.player[Main.myPlayer];
+            if (player.GetModPlayer<InfiniteSuffPlayer>().NPC_DamageLocally)
+            {
+                if (npc.Distance(Main.MouseWorld) <= 50f)
+                {
+                    if (npc.lifeRegen > 0)
+                    {
+                        npc.lifeRegen = 0;
+                    }
+                    npc.lifeRegen = -4;
+                }
+            }
             if (SuffWorld.ExpiryModeIsActive)
             {
                 #region !Boss regen
-                if (!npc.boss && !npc.friendly && !Main.hardMode && !Main.expertMode)
+                if (npc.lifeRegen == 0)
                 {
-                    npc.lifeRegen += 8;
-                }
-                else if (!npc.boss && !npc.friendly && Main.hardMode && !Main.expertMode)
-                {
-                    npc.lifeRegen += 16;
-                }
-                else if (!npc.boss && !npc.friendly && !Main.hardMode && Main.expertMode)
-                {
-                    npc.lifeRegen += 12;
-                }
-                else if (!npc.boss && !npc.friendly && Main.hardMode && Main.expertMode)
-                {
-                    npc.lifeRegen += 24;
-                }
-                #endregion
-                #region Boss Regen
-                if (npc.boss && !Main.hardMode && !Main.expertMode)
-                {
-                    npc.lifeRegen += 6;
-                }
-                else if (npc.boss && Main.hardMode && !Main.expertMode)
-                {
-                    npc.lifeRegen += 12;
-                }
-                else if (npc.boss && !Main.hardMode && Main.expertMode)
-                {
-                    npc.lifeRegen += 9;
-                }
-                else if (npc.boss && Main.hardMode && Main.expertMode)
-                {
-                    npc.lifeRegen += 18;
+                    if (!npc.boss && !npc.friendly && !Main.hardMode && !Main.expertMode)
+                    {
+                        npc.lifeRegen += 8;
+                    }
+                    else if (!npc.boss && !npc.friendly && Main.hardMode && !Main.expertMode)
+                    {
+                        npc.lifeRegen += 16;
+                    }
+                    else if (!npc.boss && !npc.friendly && !Main.hardMode && Main.expertMode)
+                    {
+                        npc.lifeRegen += 12;
+                    }
+                    else if (!npc.boss && !npc.friendly && Main.hardMode && Main.expertMode)
+                    {
+                        npc.lifeRegen += 24;
+                    }
+                    #endregion
+                    #region Boss Regen
+                    if (npc.boss && !Main.hardMode && !Main.expertMode)
+                    {
+                        npc.lifeRegen += 6;
+                    }
+                    else if (npc.boss && Main.hardMode && !Main.expertMode)
+                    {
+                        npc.lifeRegen += 12;
+                    }
+                    else if (npc.boss && !Main.hardMode && Main.expertMode)
+                    {
+                        npc.lifeRegen += 9;
+                    }
+                    else if (npc.boss && Main.hardMode && Main.expertMode)
+                    {
+                        npc.lifeRegen += 18;
+                    }
                 }
                 #endregion
             }
@@ -177,7 +190,6 @@ namespace ExpiryMode.Global_
                 }
             }
         }
-        // TODO: ...Remember. Make drops for the bump stock after all this...
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
         {
             if (GetInstance<ExpiryConfigClientSide>().PogIsTrue)
@@ -256,27 +268,6 @@ namespace ExpiryMode.Global_
             {
                 npc.buffImmune[BuffType<Paralysis>()] = true;
             }
-            /*if (npc.type == NPCID.GreenSlime ||
-                npc.type == NPCID.BlueSlime ||
-                npc.type == NPCID.PurpleSlime ||
-                npc.type == NPCID.YellowSlime ||
-                npc.type == NPCID.RedSlime ||
-                npc.type == NPCID.BlackSlime ||
-                npc.type == NPCID.Pinky ||
-                npc.type == NPCID.MotherSlime ||
-                npc.type == NPCID.BabySlime ||
-                npc.type == NPCID.IceSlime ||
-                npc.type == NPCID.SandSlime ||
-                npc.type == NPCID.DungeonSlime ||
-                npc.type == NPCID.UmbrellaSlime ||
-                npc.type == NPCID.SlimeRibbonGreen ||
-                npc.type == NPCID.SlimeRibbonRed ||
-                npc.type == NPCID.SlimeRibbonYellow ||
-                npc.type == NPCID.SlimeRibbonWhite ||
-                npc.type == NPCID.SlimeMasked)
-            {
-                npc.ai[1] = -1f;
-            }*/
         }
         public override bool PreAI(NPC npc)
         {
@@ -311,103 +302,34 @@ namespace ExpiryMode.Global_
                 }
             }
         }
-        /*public override bool PreNPCLoot(NPC npc)
+        public override bool PreNPCLoot(NPC npc)
         {
-            if (npc.type == NPCID.Bunny)
+            if (npc.type == NPCID.CultistBoss)
             {
-                if (Main.rand.Next(12) == 1)
-                    Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<BunnyEar>(), 1);
+                NPCLoader.blockLoot.Add(ItemID.LunarCraftingStation);
+                NPCLoader.blockLoot.Add(ItemID.GreaterHealingPotion);
+                NPCLoader.blockLoot.Add(ItemID.LunarCraftingStation);
             }
-            if (npc.type == NPCID.Bunny)
-            {
-                if (Main.rand.Next(12) == 1)
-                    Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<BunnyEar>(), 2);
-            }
-            if (SuffWorld.ExpiryModeIsActive)
-            {
-                if (npc.type == NPCID.EyeofCthulhu)
-                {
-                    if (!NPC.downedSlimeKing && !NPC.downedBoss1)
-                    {
-                        Main.NewTextMultiline($"Your exceptionally difficult first hurdle has been overcome.", false, Color.Firebrick);
-                    }
-                    else if (!NPC.downedBoss1)
-                    {
-                        Main.NewTextMultiline($"I see you are advancing quick. This is suprising even me...", false, Color.Firebrick);
-                    }
-                }
-                if (npc.boss && npc.type >= NPCID.EaterofWorldsHead && npc.type <= NPCID.EaterofWorldsTail)
-                {
-                    if (!NPC.downedBoss2)
-                    {
-                        Main.NewText($"A worm of corrupt beginnings and cruel ends, downed to you.", Color.LightCyan, true);
-                    }
-                }
-                if (npc.type == NPCID.KingSlime)
-                {
-                    if (!NPC.downedBoss1 && !NPC.downedSlimeKing)
-                    {
-                        Main.NewText("Your first hurdle has been overcome.", Color.Blue, true);
-                    }
-                    else if (!NPC.downedSlimeKing)
-                    {
-                        Main.NewText("You killed a slime king? What is so suprising about that?", Color.Blue, true);
-                    }
-                }
-                if (npc.type == NPCID.BrainofCthulhu)
-                {
-                    if (!NPC.downedBoss2)
-                    {
-                        Main.NewText($"I will haunt you 'till the day you die.", Color.Fuchsia, true);
-                    }
-                }
-                if (npc.type == NPCID.SkeletronHead)
-                {
-                    if (GetInstance<ExpiryConfigClientSide>().PogIsTrue)
-                    {
-                        CombatText.NewText(npc.Hitbox, Color.White, "Thank you SkuttleBaka", false, false);
-                    }
-                    if (!NPC.downedBoss3)
-                    {
-                        Main.NewText($"A spooky scary skeleton sends shivers down your spine.", Color.SlateGray, true);
-                    }
-                }
-                if (npc.type == NPCID.WallofFlesh)
-                {
-                    if (!Main.hardMode)
-                    {
-                        Main.NewTextMultiline($"Well, you somehow managed to get here. I assure you, you are not getting much further.", false, Color.DarkRed);
-                    }
-                    if (npc.boss /*&& npc.type <= NPCID.Spazmatism && npc.type >= NPCID.Retinazer)
-                    {
-                        if (!NPC.downedMechBoss2)
-                        {
-                            Main.NewText($"The notorious twins... Defeated? This is quite unbelievable. I've got my EYE on you...", Color.DarkRed, true);
-                        }
-                    }
-                    if (npc.type == NPCID.SkeletronPrime)
-                    {
-                        // downedMechBoss1 == destroyer
-                        // 2 = twins
-                        // 3 skelly prime
-                        if (!NPC.downedMechBoss3)
-                        {
-                            Main.NewText($"Damn, I even upgraded him and he was as useless as ever.", Color.DarkRed, true);
-                        }
-                    }
-                }
-            }
-            return true;
-        }*/
+            return base.PreNPCLoot(npc);
+        }
         public override void NPCLoot(NPC npc)
         {
             Player player = Main.player[Main.myPlayer];
+            if (npc.type == NPCID.Bunny)
+            {
+                if (Main.rand.Next(12) == 1)
+                    Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<BunnyEar>(), Main.rand.Next(1, 4));
+            }
             if (player.GetModPlayer<InfiniteSuffPlayer>().ZoneRadiated && Main.hardMode && !npc.boss)
             {
                 if (Main.rand.NextFloat() <= .075f)
                 {
                     Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemType<RadioactiveSoulThingy>(), 1);
                 }
+            }
+            if (npc.type == NPCID.CultistBoss)
+            {
+                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.CultistBossBag, 1);
             }
         }
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
@@ -416,7 +338,7 @@ namespace ExpiryMode.Global_
             {
                 if (player.ZoneDungeon)
                 {
-                    spawnRate = spawnRate / 3;
+                    spawnRate = spawnRate / (int)0.5;
                     maxSpawns = maxSpawns / 3;
                 }
                 else

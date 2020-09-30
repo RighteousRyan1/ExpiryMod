@@ -32,6 +32,7 @@ namespace ExpiryMode.Items.Weapons.ExpiryExclusive
             item.noMelee = true;
             item.width = 60;
             item.height = 40;
+            item.crit = 16;
         }
         public override void HoldItem(Player player)
         {

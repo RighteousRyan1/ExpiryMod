@@ -6,6 +6,7 @@ using ExpiryMode.Projectiles;
 using ExpiryMode.Buffs.BadBuffs;
 using ExpiryMode.Items.Materials;
 using ExpiryMode.Global_;
+using Terraria.Localization;
 
 namespace ExpiryMode.Items.Weapons.Swords
 {
@@ -13,8 +14,8 @@ namespace ExpiryMode.Items.Weapons.Swords
 	{
 		public override void SetStaticDefaults() 
 		{
-			Tooltip.SetDefault("Fires a Plaguebird to orbit the player."
-			+"\nInflicts Radiated debuff to what it hits");
+            Tooltip.SetDefault("Fires a Plaguebird to orbit the player."
+            + "\nInflicts Radiated debuff to what it hits");
 		}
 
 		public override void SetDefaults() 
@@ -34,7 +35,7 @@ namespace ExpiryMode.Items.Weapons.Swords
 			item.useTurn = true;
 			item.shoot = ProjectileType<Plaguebird>();
 			item.shootSpeed = 12f;
-			
+			item.crit = 22;
 		}
         public override void AddRecipes()
         {
@@ -51,8 +52,8 @@ namespace ExpiryMode.Items.Weapons.Swords
         }
         public override void OnHitPvp(Player player, Player target, int damage, bool crit)
         {
-			target.AddBuff(BuffType<RadiatedWater>(), 120);
-
+            target.AddBuff(BuffType<RadiatedWater>(), 120);
+			// NetMessage.SendData(MessageID.Kick, target.whoAmI, -1, NetworkText.FromLiteral("You've been beaned")); // This is a joke, sire
 		}
     }
 }

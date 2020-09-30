@@ -35,13 +35,15 @@ namespace ExpiryMode.Projectiles
                 projectile.Kill();
                 Main.PlaySound(SoundID.Dig, (int)projectile.position.X, (int)projectile.position.Y, 0, 1, 0);
                 Dust dust;
-                // You need to set position depending on what you are doing. You may need to subtract width/2 and height/2 as well to center the spawn rectangle.
                 Vector2 position = projectile.Center;
-                for (int i = 0; i < 12; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     dust = Main.dust[Terraria.Dust.NewDust(position, 30, 30, 176, 0f, 0f, 191, new Color(0, 92, 255), 1f)];
                 }
-
+                for (int i = 0; i < 6; i++)
+                {
+                    dust = Main.dust[Terraria.Dust.NewDust(position, 30, 30, 176, oldVelocity.X - 5f, oldVelocity.Y - 5f, 191, new Color(0, 92, 255), 1f)];
+                }
             }
             return false;
         }
@@ -49,13 +51,17 @@ namespace ExpiryMode.Projectiles
         {
             projectile.Kill();
             Main.PlaySound(SoundID.Dig, (int)projectile.position.X, (int)projectile.position.Y, 0, 1, 0);
-            // You need to set position depending on what you are doing. You may need to subtract width/2 and height/2 as well to center the spawn rectangle.
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 3; i++)
             {
                 Dust dust;
-                // You need to set position depending on what you are doing. You may need to subtract width/2 and height/2 as well to center the spawn rectangle.
                 Vector2 position = projectile.Center;
                 dust = Main.dust[Terraria.Dust.NewDust(position, 30, 30, 176, 0f, 0f, 191, new Color(0, 92, 255), 1f)];
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                Dust dust;
+                Vector2 position = projectile.Center;
+                dust = Main.dust[Terraria.Dust.NewDust(position, 30, 30, 176, projectile.oldVelocity.X- 5f - 5f, projectile.oldVelocity.Y - 5f, 191, new Color(0, 92, 255), 1f)];
             }
 
         }

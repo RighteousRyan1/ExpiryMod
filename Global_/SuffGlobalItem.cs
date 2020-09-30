@@ -16,15 +16,30 @@ using ExpiryMode.Projectiles.ClonedInstances;
 using ExpiryMode.Items.Weapons.ExpiryExclusive;
 using ExpiryMode.Tiles;
 using ExpiryMode.Items.Blocks;
+using ExpiryMode.Util;
+using ExpiryMode.Projectiles;
+using System.Threading;
 
 namespace ExpiryMode.Global_
 {
     public class SuffGlobalItem : GlobalItem
     {
+        public int shootTimer = 0;
+        public override bool InstancePerEntity => true;
+        public override bool CloneNewInstances => true;
         public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            // TODO: For future reference, make the skelly prime bag drop the "Prime Tool" that gives a random chance to fire either: A laser or a cannonball upon firing with this accessory equipped.
-            //if (item.useAmmo == AmmoID.Arrow || item.shoot == ProjectileID.WoodenArrowFriendly)
+            if (player.GetModPlayer<InfiniteSuffPlayer>().LAndD)
+            {
+                if (item.magic)
+                {
+                    Projectile.NewProjectile(player.Center, new Vector2(speedX + 1.5f, speedY + 1.5f), ProjectileType<CorruptParticle>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
+                    Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<LightParticle>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
+                    // Separate
+                    Projectile.NewProjectile(player.Center, new Vector2(speedX + 1.5f, speedY + 1.5f), ProjectileType<CorruptParticle>(), (int)(damage * 1.5f), knockBack, player.whoAmI, 30);
+                    Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<LightParticle>(), (int)(damage * 1.5f), knockBack, player.whoAmI, 30);
+                }
+            }
             if (item.useAmmo == AmmoID.Arrow)
             {
                 if (player.GetModPlayer<InfiniteSuffPlayer>().primeUtils)
@@ -35,7 +50,6 @@ namespace ExpiryMode.Global_
                         Main.projectile[bombPrime].hostile = false;
                         Main.projectile[bombPrime].friendly = true;
                         Main.projectile[bombPrime].owner = Main.myPlayer;
-                        //Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileID.BombSkeletronPrime, item.damage, item.knockBack, Main.myPlayer);
                     }
                     else if (Main.rand.NextFloat() <= 0.10f)
                     {
@@ -43,7 +57,6 @@ namespace ExpiryMode.Global_
                         Main.projectile[laserPink].hostile = false;
                         Main.projectile[laserPink].friendly = true;
                         Main.projectile[laserPink].owner = Main.myPlayer;
-                        //Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileID.PinkLaser, item.damage, item.knockBack, Main.myPlayer);
                     }
                 }
             }
@@ -59,13 +72,19 @@ namespace ExpiryMode.Global_
         }
         public override void OpenVanillaBag(string context, Player player, int arg)
         {
-            // Final Notes: Bosses Done: King Slime, Eye of Cthulhu, Skeletron, All Mech bosses, Brain of Cthulhu
-            // Undone: Queen Bee, Wall of Flesh, Duke Fishron, Plantera, Golem, Lunatic Cultist, Moon Lord
+            // Final Notes: Bosses Done: King Slime, Eye of Cthulhu, Skeletron, All Mech bosses, Brain of Cthulhu, Eater of Worlds, Lunatic Cultist, Wall of Flesh
+            // Undone: Queen Bee, Duke Fishron, Plantera, Golem, Moon Lord
             if (SuffWorld.ExpiryModeIsActive)
             {
                 if (context == "bossBag" && arg == ItemID.TwinsBossBag)
                 {
                     player.QuickSpawnItem(ItemType<BumpStock>());
+                }
+                if (context == "bossBag" && arg == ItemID.CultistBossBag)
+                {
+                    player.QuickSpawnItem(ItemType<NPCRepulsor>());
+                    player.QuickSpawnItem(ItemID.GreaterHealingPotion, Main.rand.Next(10, 20));
+                    player.QuickSpawnItem(ItemID.LunarCraftingStation);
                 }
                 if (context == "bossBag" && arg == ItemID.SkeletronBossBag)
                 {
@@ -86,6 +105,18 @@ namespace ExpiryMode.Global_
                 if (context == "bossBag" && arg == ItemID.EyeOfCthulhuBossBag)
                 {
                     player.QuickSpawnItem(ItemType<Igniter>());
+                }
+                if (context == "bossBag" && arg == ItemID.BrainOfCthulhuBossBag)
+                {
+                    player.QuickSpawnItem(ItemType<BrainBulwark>());
+                }
+                if (context == "bossBag" && arg == ItemID.EaterOfWorldsBossBag)
+                {
+                    player.QuickSpawnItem(ItemType<TheWormsTooth>());
+                }
+                if (context == "bossBag" && arg == ItemID.WallOfFleshBossBag)
+                {
+                    player.QuickSpawnItem(ItemType<SpiritsofLightAndDark>());
                 }
                 if (context == "crate" && arg == ItemID.WoodenCrate)
                 {
@@ -113,6 +144,25 @@ namespace ExpiryMode.Global_
                             player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticVest>());
                             player.QuickSpawnItem(ItemType<Items.Equippables.Vanity.Prismatic.PrismaticReflectiveBoots>());
                         }
+                    }
+                }
+            }
+        }
+        public override void OnHitNPC(Item item, Player player, NPC target, int damage, float knockBack, bool crit)
+        {
+            if (player.GetModPlayer<InfiniteSuffPlayer>().corruptTooth)
+            {
+                if (Main.rand.NextFloat() <= 0.15f)
+                {
+                    Vector2 position = target.Center;
+                    float numberProjectiles = 6f;
+                    float rotation = MathHelper.ToRadians(180f);
+                    int i = 0;
+                    while (i < numberProjectiles)
+                    {
+                        Vector2 perturbedSpeed = Utils.RotatedBy(new Vector2(target.velocity.X, target.velocity.Y), MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1f)), default) * 0.2f;
+                        Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CursedFlameFriendly, player.HeldItem.damage, 0, player.whoAmI, 0f, 0f);
+                        i++;
                     }
                 }
             }

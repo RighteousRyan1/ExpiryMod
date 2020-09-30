@@ -205,9 +205,9 @@ namespace ExpiryMode.Projectiles
                 NPC target = Main.npc[i];
                 if (!target.friendly && target.CanBeChasedBy()/*target.type != NPCID.Bunny && target.type != NPCID.Bird && target.type != NPCID.Buggy && target.type != NPCID.Worm && target.type != NPCID.Grubby && target.type != NPCID.Squirrel && target.type != NPCID.TargetDummy*/)
                 {
-                    float shootToX = target.position.X + (float)target.width * 0.5f - projectile.Center.X;
+                    float shootToX = target.position.X + target.width * 0.5f - projectile.Center.X;
                     float shootToY = target.position.Y - projectile.Center.Y;
-                    float distance = (float)Math.Sqrt((double)(shootToX * shootToX + shootToY * shootToY));
+                    float distance = (float)Math.Sqrt(shootToX * shootToX + shootToY * shootToY);
 
                     if (distance < 360f && target.active)
                     {

@@ -32,7 +32,7 @@ namespace ExpiryMode.Projectiles
             projectile.damage = player.HeldItem.damage;
             projectile.penetrate = 3;
             projectile.knockBack = 2;
-            projectile.arrow = true;
+            projectile.arrow = true; 
         }
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
