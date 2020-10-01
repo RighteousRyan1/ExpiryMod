@@ -14,6 +14,7 @@ using ExpiryMode.Util;
 using System;
 using ExpiryMode.Items.Useables;
 using Terraria.DataStructures;
+using ExpiryMode.NPCs.Friendly;
 
 namespace ExpiryMode.Global_
 {
@@ -23,6 +24,14 @@ namespace ExpiryMode.Global_
         public override bool InstancePerEntity => true;
 
         public int counterToCellSplit;
+        public bool helpClicked;
+        public override void OnChatButtonClicked(NPC npc, bool firstButton)
+        {
+            if (firstButton && npc.type == NPCID.Guide)
+            {
+                helpClicked = true;
+            }
+        }
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
 
@@ -38,44 +47,47 @@ namespace ExpiryMode.Global_
                     npc.lifeRegen = -4;
                 }
             }
-            if (SuffWorld.ExpiryModeIsActive)
+            if (npc.type != NPCType<BoxOfGoodies>())
             {
-                #region !Boss regen
-                if (npc.lifeRegen == 0)
+                if (SuffWorld.ExpiryModeIsActive)
                 {
-                    if (!npc.boss && !npc.friendly && !Main.hardMode && !Main.expertMode)
+                    #region !Boss regen
+                    if (npc.lifeRegen == 0)
                     {
-                        npc.lifeRegen += 8;
-                    }
-                    else if (!npc.boss && !npc.friendly && Main.hardMode && !Main.expertMode)
-                    {
-                        npc.lifeRegen += 16;
-                    }
-                    else if (!npc.boss && !npc.friendly && !Main.hardMode && Main.expertMode)
-                    {
-                        npc.lifeRegen += 12;
-                    }
-                    else if (!npc.boss && !npc.friendly && Main.hardMode && Main.expertMode)
-                    {
-                        npc.lifeRegen += 24;
-                    }
-                    #endregion
-                    #region Boss Regen
-                    if (npc.boss && !Main.hardMode && !Main.expertMode)
-                    {
-                        npc.lifeRegen += 6;
-                    }
-                    else if (npc.boss && Main.hardMode && !Main.expertMode)
-                    {
-                        npc.lifeRegen += 12;
-                    }
-                    else if (npc.boss && !Main.hardMode && Main.expertMode)
-                    {
-                        npc.lifeRegen += 9;
-                    }
-                    else if (npc.boss && Main.hardMode && Main.expertMode)
-                    {
-                        npc.lifeRegen += 18;
+                        if (!npc.boss && !npc.friendly && !Main.hardMode && !Main.expertMode)
+                        {
+                            npc.lifeRegen += 8;
+                        }
+                        else if (!npc.boss && !npc.friendly && Main.hardMode && !Main.expertMode)
+                        {
+                            npc.lifeRegen += 16;
+                        }
+                        else if (!npc.boss && !npc.friendly && !Main.hardMode && Main.expertMode)
+                        {
+                            npc.lifeRegen += 12;
+                        }
+                        else if (!npc.boss && !npc.friendly && Main.hardMode && Main.expertMode)
+                        {
+                            npc.lifeRegen += 24;
+                        }
+                        #endregion
+                        #region Boss Regen
+                        if (npc.boss && !Main.hardMode && !Main.expertMode)
+                        {
+                            npc.lifeRegen += 6;
+                        }
+                        else if (npc.boss && Main.hardMode && !Main.expertMode)
+                        {
+                            npc.lifeRegen += 12;
+                        }
+                        else if (npc.boss && !Main.hardMode && Main.expertMode)
+                        {
+                            npc.lifeRegen += 9;
+                        }
+                        else if (npc.boss && Main.hardMode && Main.expertMode)
+                        {
+                            npc.lifeRegen += 18;
+                        }
                     }
                 }
                 #endregion
@@ -143,6 +155,10 @@ namespace ExpiryMode.Global_
                     if (Main.rand.NextFloat() < .1f)
                     {
                         chat = $"My wares are very worth it! {Main.npc[merchant].GivenName} has no taste whatsoever.";
+                    }
+                    if (Main.rand.NextFloat() < 0.3f)
+                    {
+                        chat = $"{player.name}, if you have heard of the legendary Wyvern, then you have heard of the legendary Flying Supply Crate! Those things carry loot that anyone can desire. Just be sure you deserve it. I heard they are rarely found during the day.";
                     }
                 }
                 if (npc.type == NPCID.Merchant)

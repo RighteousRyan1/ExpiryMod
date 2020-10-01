@@ -15,6 +15,7 @@ using System;
 using ExpiryMode.Items.Useables;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ExpiryMode.Global_
 {
@@ -225,12 +226,7 @@ namespace ExpiryMode.Global_
                             {
                                 if (npc.life >= npc.lifeMax / 2)
                                 {
-                                    timer++;
-                                    if (timer == 20)
-                                    {
-                                        npc.velocity.X++;
-                                        timer = 0;
-                                    }
+                                    npc.velocity.X++;
                                     if (npc.velocity.X > 2)
                                     {
                                         npc.velocity.X = 2;
@@ -238,12 +234,8 @@ namespace ExpiryMode.Global_
                                 }
                                 else if (npc.life < npc.lifeMax / 2)
                                 {
-                                    timer++;
-                                    if (timer == 20)
-                                    {
-                                        npc.velocity.X++;
-                                        timer = 0;
-                                    }
+
+                                    npc.velocity.X++;
                                     if (npc.velocity.X > 4)
                                     {
                                         npc.velocity.X = 4;
@@ -254,12 +246,7 @@ namespace ExpiryMode.Global_
                             {
                                 if (npc.life >= npc.lifeMax / 2)
                                 {
-                                    timer++;
-                                    if (timer == 20)
-                                    {
-                                        npc.velocity.X--;
-                                        timer = 0;
-                                    }
+                                    npc.velocity.X--;
                                     if (npc.velocity.X < 2)
                                     {
                                         npc.velocity.X = -2;
@@ -267,12 +254,7 @@ namespace ExpiryMode.Global_
                                 }
                                 else if (npc.life < npc.lifeMax / 2)
                                 {
-                                    timer++;
-                                    if (timer == 20)
-                                    {
-                                        npc.velocity.X--;
-                                        timer = 0;
-                                    }
+                                    npc.velocity.X--;
                                     if (npc.velocity.X < 4)
                                     {
                                         npc.velocity.X = -4;
@@ -286,7 +268,8 @@ namespace ExpiryMode.Global_
                 {
                     if (SuffWorld.ExpiryModeIsActive)
                     {
-                        if (Main.GameUpdateCount % 200 == 0)
+                        npc.ai[10]++;
+                        if (npc.ai[10] == 200)
                         {
                             if (!player.dead)
                             {
@@ -301,6 +284,7 @@ namespace ExpiryMode.Global_
                                     i++;
                                 }
                             }
+                            npc.ai[10] = 0;
                         }
                     }
                 }
@@ -308,7 +292,8 @@ namespace ExpiryMode.Global_
                 {
                     if (SuffWorld.ExpiryModeIsActive)
                     {
-                        if (Main.GameUpdateCount % 240 == 0)
+                        npc.ai[10]++;
+                        if (npc.ai[10] == 240)
                         {
                             if (!player.dead)
                             {
@@ -323,6 +308,7 @@ namespace ExpiryMode.Global_
                                     i++;
                                 }
                             }
+                            npc.ai[10] = 0;
                         }
                     }
                 }

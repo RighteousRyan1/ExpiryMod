@@ -1,70 +1,73 @@
 using System;
+using System.Linq;
 using ExpiryMode.Mod_;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 using static Terraria.ModLoader.ModContent;
 
 namespace ExpiryMode.NPCs.TownNPCs
 {
 	[AutoloadHead]
-	public class WarVeteran : ModNPC
+	public class WarVeteran_Other : ModNPC
 	{
-        public override string Texture => "ExpiryMode/NPCs/TownNPCs/WarVeteran";
+        public override string Texture => "ExpiryMode/NPCs/TownNPCs/WarVeteran_Other";
 		public override string[] AltTextures => new[]
 		{
-			"ExpiryMode/NPCs/TownNPCs/WarVeteran_Alt_1"
+			"ExpiryMode/NPCs/TownNPCs/WarVeteran_Other_Alt_1"
 		};
         public override void SetStaticDefaults() 
 		{
-            Main.npcFrameCount[npc.type] = 26;
-            NPCID.Sets.AttackFrameCount[npc.type] = 4;
-            NPCID.Sets.DangerDetectRange[npc.type] = 500;
-            NPCID.Sets.AttackType[npc.type] = 1;
-            NPCID.Sets.AttackTime[npc.type] = 90;
-            NPCID.Sets.AttackAverageChance[npc.type] = 30;
+            DisplayName.SetDefault("War Veteran");
+			Main.npcFrameCount[npc.type] = 26;
+			NPCID.Sets.AttackFrameCount[npc.type] = 4;
+			NPCID.Sets.DangerDetectRange[npc.type] = 500;
+			NPCID.Sets.AttackType[npc.type] = 1;
+			NPCID.Sets.AttackTime[npc.type] = 90;
+			NPCID.Sets.AttackAverageChance[npc.type] = 30;
             NPCID.Sets.HatOffsetY[npc.type] = 0;
-        }
-        public override void SetDefaults()
+		}
+		public override void SetDefaults()
         {
-            npc.townNPC = true;
-            npc.friendly = true;
-            npc.width = 18;
-            npc.height = 40;
-            npc.aiStyle = 7;
-            npc.damage = 10;
-            npc.defense = 15;
-            npc.lifeMax = 250;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.knockBackResist = 0.5f;
-            animationType = NPCID.Guide;
-        }
-        public override void HitEffect(int hitDirection, double damage)
-        {
-            int num = npc.life > 0 ? 1 : 5;
-            for (int k = 0; k < num; k++)
+			npc.townNPC = true;
+			npc.friendly = true;
+			npc.width = 18;
+			npc.height = 40;
+			npc.aiStyle = 7;
+			npc.damage = 10;
+			npc.defense = 15;
+			npc.lifeMax = 250;
+			npc.HitSound = SoundID.NPCHit1;
+			npc.DeathSound = SoundID.NPCDeath1;
+			npc.knockBackResist = 0.5f;
+			animationType = NPCID.Guide;
+		}
+		public override void HitEffect(int hitDirection, double damage)
+		{
+			int num = npc.life > 0 ? 1 : 5;
+			for (int k = 0; k < num; k++) 
             {
-                Dust.NewDust(npc.position, npc.width, npc.height, DustID.Blood);
-            }
-        }
-        public override bool CanTownNPCSpawn(int numTownNPCs, int money)
-        {
-            int noVeteranActive = NPC.FindFirstNPC(NPCType<WarVeteran_Other>());
-            Player player = Main.player[Main.myPlayer];
-            return player.GetModPlayer<InfiniteSuffPlayer>().hasVeteranMoveInRequirement && NPC.downedBoss1 && noVeteranActive <= 0;
-        }
-        public override string TownNPCName()
-        {
-            switch (WorldGen.genRand.Next(8))
-            {
-                case 0:
-                    return "Juaquin";
-                case 1:
-                    return "Ryan";
-                case 2:
+				Dust.NewDust(npc.position, npc.width, npc.height, DustID.Blood);
+			}
+		}
+		public override bool CanTownNPCSpawn(int numTownNPCs, int money) 
+		{
+			int noVeteranActive = NPC.FindFirstNPC(NPCType<WarVeteran>());
+			Player player = Main.player[Main.myPlayer];
+			return player.GetModPlayer<InfiniteSuffPlayer>().hasVeteranMoveInRequirement && NPC.downedBoss1 && !Main.npc[noVeteranActive].active;
+		}
+		public override string TownNPCName() 
+		{
+			switch (WorldGen.genRand.Next(8)) 
+			{
+				case 0:
+					return "Juaquin";
+				case 1:
+					return "Ryan";
+				case 2:
                     return "William";
                 case 3:
                     return "Beau";
@@ -75,14 +78,14 @@ namespace ExpiryMode.NPCs.TownNPCs
                 case 6:
                     return "Bill";
                 default:
-                    return "Jack";
-            }
-        }
-        public override string GetChat()
-        {
-            Player player = Main.player[Main.myPlayer];
+					return "Jack";
+			}
+		}
+		public override string GetChat() 
+		{
+			Player player = Main.player[Main.myPlayer];
             int armsDealer = NPC.FindFirstNPC(NPCID.ArmsDealer);
-            int warVetOther = NPC.FindFirstNPC(NPCType<WarVeteran_Other>());
+            int warVetOther = NPC.FindFirstNPC(NPCType<WarVeteran>());
             if (armsDealer >= 0 && Main.rand.NextBool(12))
             {
                 return $"Can you believe {Main.npc[armsDealer].GivenName} is trying to 1-UP me with his sales? Yeah, I know. I win.";
@@ -98,7 +101,7 @@ namespace ExpiryMode.NPCs.TownNPCs
                     {
                         return "All these people are getting on my nerves. It's a good thing I have guns.";
                     }
-                    break;
+					break;
                 case 1:
                     return "This suit is the ultimate camoflague. Wait... Why are you able to see me?";
                 case 2:
@@ -110,7 +113,7 @@ namespace ExpiryMode.NPCs.TownNPCs
                 case 5:
                     return $"Do you like the stuff I sell, {player.name}? Because these things cost me a pretty penny for you to look at.";
                 case 6:
-                    return $"Lemme give you some fair warnings, {player.name}, I am a completely serious person, so if you try and mess with me, it will only end terribly for you.";
+                    return $"Lemme give you some fair warnings, {player.name}, don't play no games with me. I ain't that chill type of homie.";
                 case 7:
                     return "These aren't simply guns. They are my babies.";
                 case 8:
@@ -122,31 +125,31 @@ namespace ExpiryMode.NPCs.TownNPCs
                 default:
                     return "There is a box with wings that flies in the sky, and I really want to put a bullet in it so I can get that glorious loot!";
             }
-            return base.GetChat();
-        }
-        public override void SetChatButtons(ref string button, ref string button2)
-        {
-            button = "Guns";
-            button2 = "Ammo";
-        }
+			return base.GetChat();
+		}
+		public override void SetChatButtons(ref string button, ref string button2)
+		{
+			button = "Guns";
+			button2 = "Ammo";
+		}
 
-        public override void OnChatButtonClicked(bool firstButton, ref bool shop)
-        {
-            Player player = Main.player[Main.myPlayer];
-            if (firstButton)
-            {
+		public override void OnChatButtonClicked(bool firstButton, ref bool shop) 
+		{
+			Player player = Main.player[Main.myPlayer];
+			if (firstButton) 
+			{
                 shop = true;
-                player.GetModPlayer<InfiniteSuffPlayer>().GunShopActive = true;
-            }
-            else
-            {
-                player.GetModPlayer<InfiniteSuffPlayer>().GunShopActive = false;
-                shop = true;
-            }
-        }
+				player.GetModPlayer<InfiniteSuffPlayer>().GunShopActive = true;
+			}
+			else 
+			{
+				player.GetModPlayer<InfiniteSuffPlayer>().GunShopActive = false;
+				shop = true;
+			}
+		}
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
-            Player player = Main.player[Main.myPlayer];
+			Player player = Main.player[Main.myPlayer];
             if (player.GetModPlayer<InfiniteSuffPlayer>().GunShopActive)
             {
                 shop.item[nextSlot].SetDefaults(ItemID.SnowballCannon);
@@ -396,29 +399,28 @@ namespace ExpiryMode.NPCs.TownNPCs
                 }
             }
         }
-        // TODO: Make second shop work, as it is VERY fucking faulty rn
+		// TODO: Make second shop work, as it is VERY fucking faulty rn
 
-        public override void NPCLoot()
-        {
-            //Item.NewItem(npc.getRect(), ItemType<Items.Armor.ExampleCostume>());
-        }
-        public override bool CanGoToStatue(bool toKingStatue)
-        {
-            return true;
-        }
-        public override void OnGoToStatue(bool toKingStatue)
-        {
-            if (Main.netMode == NetmodeID.Server)
-            {
-                ModPacket packet = mod.GetPacket();
-                packet.Write((byte)npc.whoAmI);
-                packet.Send();
-            }
-            else
-            {
-                StatueTeleport();
-            }
-        }
+		public override void NPCLoot()
+		{
+			//Item.NewItem(npc.getRect(), ItemType<Items.Armor.ExampleCostume>());
+		}
+		public override bool CanGoToStatue(bool toKingStatue) 
+		{
+			return true;
+		}
+		public override void OnGoToStatue(bool toKingStatue) 
+		{
+			if (Main.netMode == NetmodeID.Server) {
+				ModPacket packet = mod.GetPacket();
+				packet.Write((byte)npc.whoAmI);
+				packet.Send();
+			}
+			else 
+			{
+				StatueTeleport();
+			}
+		}
 
         // Create a square of pixels around the NPC on teleport.
         public void StatueTeleport()
@@ -442,7 +444,7 @@ namespace ExpiryMode.NPCs.TownNPCs
             item = ItemID.RedRyder;
             closeness = 10;
         }
-        public override void TownNPCAttackStrength(ref int damage, ref float knockback)
+        public override void TownNPCAttackStrength(ref int damage, ref float knockback) 
         {
             if (!Main.hardMode)
             {
@@ -454,7 +456,7 @@ namespace ExpiryMode.NPCs.TownNPCs
                 damage = 50;
                 knockback = 6;
             }
-        }
+		}
         public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
         {
             projType = ProjectileID.Bullet;
@@ -467,8 +469,8 @@ namespace ExpiryMode.NPCs.TownNPCs
         }
         public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
         {
-            cooldown = 30;
-            randExtraCooldown = 30;
-        }
-    }
+			cooldown = 30;
+			randExtraCooldown = 30;
+		}
+	}
 }

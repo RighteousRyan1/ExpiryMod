@@ -19,11 +19,23 @@ using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
 using IL.Terraria.Utilities;
 using System;
+using ExpiryMode.NPCs.Friendly;
 
 namespace ExpiryMode.Mod_
 {
     public class InfiniteSuffPlayer : ModPlayer
     {
+        /// <summary>
+        /// Whether the player pressed "Guns" in the War Veteran UI
+        /// </summary>
+        public bool GunShopActive = false;
+        /// <summary>
+        /// Whether the player has > 200 musket balls
+        /// </summary>
+        public bool hasVeteranMoveInRequirement = false;
+        /// <summary>
+        /// Light And Dark accessory?
+        /// </summary>
         public bool LAndD = false;
         /// <summary>
         /// Hold both mice down to damage enemies inside of the field.
@@ -133,6 +145,8 @@ namespace ExpiryMode.Mod_
             NPC_AttractLocally = false;
             NPC_DamageLocally = false;
             LAndD = false;
+            hasVeteranMoveInRequirement = false;
+            GunShopActive = false;
         }
         public override bool PreItemCheck()
         {
@@ -266,17 +280,6 @@ namespace ExpiryMode.Mod_
         }
         public override void PostUpdate()
         {
-            /*if (player.wet)
-            {
-                if (player.velocity.Y != 0)
-                {
-                    player.fullRotation = player.velocity.ToRotation() + (float)Math.PI / 2f;
-                }
-                else if (player.velocity.Y == 0)
-                {
-                    player.fullRotation = 0;
-                }
-            }*/ // OS Code moment (OS dont use, im not even usign ti lamffmddsasf)
             if (NPC_RepulseLocally)
             {
                 for (int i = 0; i < 180; i++)

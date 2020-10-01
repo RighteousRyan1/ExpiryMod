@@ -48,16 +48,16 @@ namespace ExpiryMode.Global_
             {
                 if (player.GetModPlayer<InfiniteSuffPlayer>().corruptTooth && projectile.type != ProjectileID.CursedFlameFriendly)
                 {
-                    if (Main.rand.NextFloat() <= 0.09f)
+                    if (Main.rand.NextFloat() <= 0.16f)
                     {
                         Vector2 position = projectile.Center;
-                        float numberProjectiles = 4f;
+                        float numberProjectiles = 5f;
                         float rotation = MathHelper.ToRadians(180f);
                         int i = 0;
                         while (i < numberProjectiles)
                         {
                             Vector2 perturbedSpeed = Utils.RotatedBy(new Vector2(projectile.velocity.X, projectile.velocity.Y), MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1f)), default) * 0.2f;
-                            Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CursedFlameFriendly, player.HeldItem.damage, 0, player.whoAmI, 0f, 0f);
+                            Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CursedFlameFriendly, (int)(player.HeldItem.damage * 1.5f), 0, player.whoAmI, 0f, 0f);
                             i++;
                         }
                     }

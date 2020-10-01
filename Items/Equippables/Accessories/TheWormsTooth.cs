@@ -11,7 +11,7 @@ namespace ExpiryMode.Items.Equippables.Accessories
 		public override void SetStaticDefaults() 
 		{
 			DisplayName.SetDefault("Corrupt Tooth");
-			Tooltip.SetDefault("Allows for the random chance of generating a circle of cursed flame balls upon hit of an enemy\nMelee strikes generate more cursed flames");
+			Tooltip.SetDefault("Allows for the random chance of generating a circle of cursed flame balls upon hit of an enemy\nMelee strikes generate more cursed flames\n'It eminates the thoughts of todays politicians'");
 		}
         public override void SetDefaults()
         {

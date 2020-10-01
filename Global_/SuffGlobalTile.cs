@@ -4,6 +4,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using ExpiryMode.Items.Materials;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace ExpiryMode.Global_
 {
@@ -48,5 +49,13 @@ namespace ExpiryMode.Global_
             #endregion
             base.KillTile(i, j, type, ref fail, ref effectOnly, ref noItem);
         }
+        /*public override int[] AdjTiles(int type)
+        {
+            Player player = Main.LocalPlayer;
+            List<int> tiles = new List<int>();
+            if (player.HasItem(ItemType<PocketWorkBenches>()))
+                tiles.Add(TileID.WorkBenches);
+            return tiles.ToArray();
+        }*/
     }
 }

@@ -40,7 +40,7 @@ namespace ExpiryMode.Global_
                     Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<LightParticle>(), (int)(damage * 1.5f), knockBack, player.whoAmI, 30);
                 }
             }
-            if (item.useAmmo == AmmoID.Arrow)
+            if (item.useAmmo == AmmoID.Arrow && item.ranged)
             {
                 if (player.GetModPlayer<InfiniteSuffPlayer>().primeUtils)
                 {
@@ -61,6 +61,18 @@ namespace ExpiryMode.Global_
                 }
             }
             return base.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+        }
+        public override bool AltFunctionUse(Item item, Player player)
+        {
+            return base.AltFunctionUse(item, player);
+        }
+        public override bool UseItem(Item item, Player player)
+        {
+            if (item.healMana > 0)
+            {
+                player.AddBuff(BuffType<ManaDeficiency>(), Main.rand.Next(240, 481), false);
+            }
+            return false;
         }
         public override bool CanEquipAccessory(Item item, Player player, int slot)
         {
@@ -160,15 +172,13 @@ namespace ExpiryMode.Global_
                     int i = 0;
                     while (i < numberProjectiles)
                     {
-                        Vector2 perturbedSpeed = Utils.RotatedBy(new Vector2(target.velocity.X, target.velocity.Y), MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1f)), default) * 0.2f;
-                        Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CursedFlameFriendly, player.HeldItem.damage, 0, player.whoAmI, 0f, 0f);
+                        // TODO: If it doesnt work, just fix it, you nerd
+                        Vector2 perturbedSpeed = Utils.RotatedBy(new Vector2(20, 20), MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1f)), default) * 0.2f;
+                        Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CursedFlameFriendly, (int)(player.HeldItem.damage * 1.5f), 0, player.whoAmI, 0f, 0f);
                         i++;
                     }
                 }
             }
-        }
-        public override void UpdateEquip(Item item, Player player)
-        {
         }
         public override void SetDefaults(Item item)
         {
@@ -176,14 +186,6 @@ namespace ExpiryMode.Global_
             {
                 item.SetNameOverride("Holy Pendant");
             }
-        }
-        public override bool UseItem(Item item, Player player)
-        {
-            if (item.healMana > 0)
-            {
-                player.AddBuff(BuffType<ManaDeficiency>(), Main.rand.Next(240, 480), false);
-            }
-            return false;
         }
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
         {
@@ -338,7 +340,7 @@ namespace ExpiryMode.Global_
                 {
                     if (modLine3.mod == "Terraria" && modLine3.Name == "Tooltip0")
                     {
-                        modLine3.text = $"Enables Expiry Mode\nBe aware. You can only use this item once. If you enable the mode, you cannot disable it ever again in this world.\nBefore you use it, you must be absolutely sure that you want to enable the mode.";
+                        modLine3.text = $"Enables Expiry Mode\nSome Changes are as follows:\n- AI Changes to some NPCs\n- Coins now drop from ores\n- NPCs have greater overall stats\n- Expiry Mode exclusive drops\n- Bragging Rights\nOnly play if you are willing to have a fun fight\nQuick Note: If you use this while a boss is alive then you will instantly die.";
                     }
                 }
             }
@@ -348,7 +350,7 @@ namespace ExpiryMode.Global_
                 {
                     if (modLine3.mod == "Terraria" && modLine3.Name == "Tooltip0")
                     {
-                        modLine3.text = $"You cannot disable Expiry Mode in this world once it has already\nbeen enabled in this world. This item is now worthless.\nIf you want to disable the mode, please debug\nto disable it, as you cannot legitimately disable it.";
+                        modLine3.text = $"Disables Expiry Mode. If a boss is active and this is used, you will instantly die.";
                     }
                 }
             }
@@ -372,7 +374,10 @@ namespace ExpiryMode.Global_
             }
             if (item.rare == ExpiryRarity.Expiry)
             {
-                TooltipLine expiryAdd = new TooltipLine(mod, "Expiry", "Expiry");
+                TooltipLine expiryAdd = new TooltipLine(mod, "Expiry", "Expiry")
+                {
+                    overrideColor = ColorHelper.ColorSwitcher(Color.DarkOrange, Color.Firebrick, 20f)
+                };
                 tooltips.Add(expiryAdd);
             }
             #endregion

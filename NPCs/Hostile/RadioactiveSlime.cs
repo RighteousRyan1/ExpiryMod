@@ -6,42 +6,42 @@ using ExpiryMode.Buffs.BadBuffs;
 using Microsoft.Xna.Framework;
 using ExpiryMode.Util;
 
-namespace ExpiryMode.NPCs
+namespace ExpiryMode.NPCs.Hostile
 {
-	public class RadioactiveZombie : ModNPC
+	public class RadioactiveSlime : ModNPC
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Radioactive Zombie");
-			Main.npcFrameCount[npc.type] = Main.npcFrameCount[16];
+			DisplayName.SetDefault("Radioactive Slime");
+			Main.npcFrameCount[npc.type] = Main.npcFrameCount[2];
 		}
         public override void SetDefaults()
         {
             npc.buffImmune[BuffType<RadiatedWater>()] = true;
             npc.width = 32;
             npc.height = 24;
-            npc.damage = 27;
-            npc.defense = 10;
-            npc.lifeMax = 110;
-            npc.HitSound = SoundID.NPCHit9;
-            npc.DeathSound = SoundID.NPCDeath2;
+            npc.damage = 18;
+            npc.defense = 6;
+            npc.lifeMax = 50;
+            npc.HitSound = SoundID.NPCHit1;
+            npc.DeathSound = SoundID.NPCDeath1;
             npc.value = 60f;
             npc.knockBackResist = 0f;
-            npc.aiStyle = NPCAIStyleID.Fighter;
-            Main.npcFrameCount[npc.type] = 16;
-            aiType = NPCAIStyleID.Fighter;
-            animationType = NPCID.Guide;
+            npc.aiStyle = NPCAIStyleID.Slime;
+            Main.npcFrameCount[npc.type] = 2;
+            aiType = NPCAIStyleID.Slime;
+            animationType = NPCID.BlueSlime;
             if (Main.hardMode)
             {
-                npc.damage = 52;
-                npc.defense = 20;
-                npc.knockBackResist = 0.3f;
+                npc.damage = 22;
+                npc.defense = 25;
+                npc.knockBackResist = 0.25f;
             }
             else
             {
-                npc.damage = 27;
-                npc.defense = 10;
-                npc.knockBackResist = .15f;
+                npc.damage = 18;
+                npc.defense = 6;
+                npc.knockBackResist = 0f;
             }
         }
         public override void OnHitPlayer(Player target, int damage, bool crit)
@@ -57,20 +57,16 @@ namespace ExpiryMode.NPCs
         }
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			return spawnInfo.player.GetModPlayer<Mod_.InfiniteSuffPlayer>().ZoneRadiated && !Main.dayTime ? .8f : 0f;
+			return spawnInfo.player.GetModPlayer<Mod_.InfiniteSuffPlayer>().ZoneRadiated ? .5f : 0f;
 		}
-        public override void FindFrame(int frameHeight)
+        /*public override void FindFrame(int frameHeight)
         {
-            if (npc.frame.Y / npc.frame.Height > 15)
-            {
-                npc.frame.Y = 0 * npc.frame.Height;
-            }
-            /*npc.frameCounter = 1f;
+            npc.frameCounter = 1f;
             npc.frameCounter %= Main.npcFrameCount[npc.type];
             int frame = (int)npc.frameCounter;
             npc.frame.Y = frame * frameHeight;
-            npc.spriteDirection = npc.direction;*/
-        }
+            npc.spriteDirection = npc.direction;
+        }*/
         public override void HitEffect(int hitDirection, double damage)
         {
             Dust dust;
@@ -92,7 +88,7 @@ namespace ExpiryMode.NPCs
             }
 
         }
-        /*public override void NPCLoot()
+        public override void NPCLoot()
 		{
             if (Main.rand.Next(1) == 1)
                 Item.NewItem(npc.getRect(), ItemID.Gel, 1);
@@ -106,6 +102,6 @@ namespace ExpiryMode.NPCs
                 Item.NewItem(npc.getRect(), ItemID.Gel, 5);
 			if (Main.rand.Next(6) == 1)
 				Item.NewItem(npc.getRect(), ItemID.Gel, 6);
-		}*/
+		}
 	}
 }

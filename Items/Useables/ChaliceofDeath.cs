@@ -47,21 +47,38 @@ namespace ExpiryMode.Items.Useables
         }*/
         public override bool UseItem(Player player)
         {
-			if (!SuffWorld.ExpiryModeIsActive)
+            if (Main.npc.Any(n => n.active && n.boss))
+            {
+                player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} tried to cheat. What a scumbag."), player.statLifeMax2 + 200, 0, false);
+                return false;
+            }
+            if (SuffWorld.ExpiryModeIsActive)
+            {
+                SuffWorld.ExpiryModeIsActive = false;
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    SuffWorld.ExpiryModeIsActive = false;
+                    NetMessage.SendData(MessageID.WorldData);
+                }
+                Main.NewText($"Expiry Mode has been disabled by {player.name}. What a wimp.", Color.DarkOrange, true);
+                return true;
+            }
+            if (!SuffWorld.ExpiryModeIsActive)
             {
                 SuffWorld.ExpiryModeIsActive = true;
                 if (Main.netMode == NetmodeID.Server)
                 {
-                    NetMessage.SendData(MessageID.WorldData);
                     SuffWorld.ExpiryModeIsActive = true;
+                    NetMessage.SendData(MessageID.WorldData);
                 }
-                Main.NewText("Expiry Mode has been enabled. Be ready for some real hell.", Color.DarkOrange, true);
+                Main.NewText($"Expiry Mode has been enabled. {player.name} is a real man.", Color.DarkOrange, true);
+                return true;
             }
-			return true;
+            return base.UseItem(player);
         }
 		public override bool CanUseItem(Player player)
 		{
-            return Main.expertMode && !Main.npc.Any(n => n.active && n.boss) && !SuffWorld.ExpiryModeIsActive;
+            return Main.expertMode;
         }
 	}
 }
