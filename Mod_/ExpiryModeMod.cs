@@ -192,6 +192,8 @@ namespace ExpiryMode.Mod_
         public override void Unload()
         {
             ShiftIsPressed = null;
+            IL.Terraria.Main.DrawMenu -= new ILContext.Manipulator(HookMenuSplash);
+            IL.Terraria.Main.DoDraw -= new ILContext.Manipulator(HookItemTextDraw);
             IL.Terraria.Main.UpdateAudio -= new ILContext.Manipulator(TitleMusicIL);
             customTitleMusicSlot = 6;
             Close();
@@ -204,7 +206,6 @@ namespace ExpiryMode.Mod_
         }
         public override void Load()
         {
-            /*On.Terraria.Projectile.SetDefaults += Projectile_SetDefaults;*/ // Potential Method swap for later, idk
             IL.Terraria.Main.DrawMenu += HookMenuSplash;
             IL.Terraria.Main.DoDraw += HookItemTextDraw;
             On.Terraria.Item.SetDefaults += Item_SetDefaults;
@@ -225,7 +226,6 @@ namespace ExpiryMode.Mod_
             {
                 rarityText[i] = new RarityPopupText();
             }
-
             On.Terraria.Item.Prefix += Item_Prefix;
             On.Terraria.ItemText.NewText += ItemText_NewText;
             On.Terraria.Main.MouseText += Main_MouseText;
@@ -243,13 +243,6 @@ namespace ExpiryMode.Mod_
             orig(self, Type, noMatCheck);
             self.GetGlobalItem<OnTerrariaHook>().defAutoReuse = self.autoReuse;
         }
-
-        /*private void Projectile_SetDefaults(On.Terraria.Projectile.orig_SetDefaults orig, Projectile self, int Type)
-        {
-            orig(self, Type);
-            self.GetGlobalProjectile<MakeFriendly>().defFriendly = self.friendly;
-            self.GetGlobalProjectile<MakeFriendly>().defNoHostile = self.hostile;
-        }*/
 
         /// <summary>
         /// Makes the autoReuse thingy work, so yeah.
@@ -946,6 +939,7 @@ namespace ExpiryMode.Mod_
                 }
             }
         }
+    }
         public class HurtSelf : ModCommand
         {
             public override CommandType Type
@@ -987,51 +981,86 @@ namespace ExpiryMode.Mod_
                 }
             }
         }
-        public class SetMaxLife : ModCommand
+    public class SetMaxLife : ModCommand
+    {
+        public override CommandType Type
+            => CommandType.Chat;
+
+        public override string Command
+            => "lifeSet";
+
+        public override string Usage
+            => "/lifeSet <life>";
+
+        public override string Description
+            => "Set your max life";
+
+        public override void Action(CommandCaller caller, string input, string[] args)
         {
-            public override CommandType Type
-                => CommandType.Chat;
+            Player player = Main.player[myPlayer];
+            var lifeAmt = args[0];
+            if (!int.TryParse(args[0], out int type))
+            {
+                if (type == 0)
+                {
+                    throw new UsageException($"{lifeAmt} is not a valid integer.");
+                }
+            }
+            int lifeInt = 1;
+            if (args.Length >= 2)
+            {
+                lifeInt = int.Parse(args[1]);
+            }
+            if (!player.HasItem(ItemType<CommandItem>()))
+            {
+                NewText("This command can only be used while debugging!", Color.Red);
+            }
+            if (player.HasItem(ItemType<CommandItem>()))
+            {
+                player.statLifeMax = type;
+            }
 
-            public override string Command
-                => "lifeSet";
+        }
+    }
+    /// <summary>
+    /// Rename yourself!
+    /// </summary>
+    public class Rename : ModCommand
+    {
+        public override CommandType Type
+            => CommandType.Chat;
 
-            public override string Usage
-                => "/lifeSet <life>";
+        public override string Command
+            => "rename";
 
-            public override string Description
-                => "Set your max life";
+        public override string Usage
+            => "/rename <string>";
 
-            public override void Action(CommandCaller caller, string input, string[] args)
+        public override string Description
+            => "change your name"
+                + "\n Use $ to represent spaces.";
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (!int.TryParse(args[0], out int type))
             {
                 Player player = Main.player[myPlayer];
-                var lifeAmt = args[0];
-                if (!int.TryParse(args[0], out int type))
-                {
-                    if (type == 0)
-                    {
-                        throw new UsageException($"{lifeAmt} is not a valid integer.");
-                    }
-                }
-                int lifeInt = 1;
+                var name = args[0].Replace("$", " ");
+                //var name = args[0];
+                string nameSet = "";
                 if (args.Length >= 2)
                 {
-                    lifeInt = int.Parse(args[1]);
+                    nameSet = int.Parse(args[1]).ToString();
                 }
-                if (!player.HasItem(ItemType<CommandItem>()))
-                {
-                    NewText("This command can only be used while debugging!", Color.Red);
-                }
-                if (player.HasItem(ItemType<CommandItem>()))
-                {
-                    player.statLifeMax = type;
-                }
-
+                NewText($"Your old name was {player.name}.", ColorHelper.ColorSwitcher(Color.DarkBlue, Color.Aqua, 20f));
+                player.name = name;
+                NewText($"Now your name has been changed to {name}.", ColorHelper.ColorSwitcher(Color.Aqua, Color.DarkBlue, 20f));
             }
         }
-        /// <summary>
-        /// Enables and disables Expiry Mode upon use with the debugging item in your inventory.
-        /// </summary>
-        public class ToggleExpiry : ModCommand
+    }
+    /// <summary>
+    /// Enables and disables Expiry Mode upon use with the debugging item in your inventory.
+    /// </summary>
+    public class ToggleExpiry : ModCommand
         {
             public override CommandType Type
                 => CommandType.Chat;
@@ -1196,57 +1225,57 @@ namespace ExpiryMode.Mod_
                 }
             }
         }
-        public class DeathCount : ModCommand
+    public class DeathCount : ModCommand
+    {
+        public override CommandType Type
+            => CommandType.Chat;
+
+        public override string Command
+            => "deaths";
+
+        public override string Usage
+            => "/deaths";
+
+        public override string Description
+            => "How many deaths for each player in the server";
+
+        public override void Action(CommandCaller caller, string input, string[] args)
         {
-            public override CommandType Type
-                => CommandType.Chat;
-
-            public override string Command
-                => "deaths";
-
-            public override string Usage
-                => "/deaths";
-
-            public override string Description
-                => "How many deaths for each player in the server";
-
-            public override void Action(CommandCaller caller, string input, string[] args)
+            if (player[0].active)
             {
-                if (player[0].active)
-                {
-                    NewText($"{player[0].name} has died {player[0].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
-                if (player[1].active)
-                {
-                    NewText($"{player[1].name} has died {player[1].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
-                if (player[2].active)
-                {
-                    NewText($"{player[2].name} has died {player[2].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
-                if (player[3].active)
-                {
-                    NewText($"{player[3].name} has died {player[3].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
-                if (player[4].active)
-                {
-                    NewText($"{player[4].name} has died {player[4].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
-                if (player[5].active)
-                {
-                    NewText($"{player[5].name} has died {player[5].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
-                if (player[6].active)
-                {
-                    NewText($"{player[6].name} has died {player[6].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
-                if (Main.player[7].active)
-                {
-                    NewText($"{player[7].name} has died {player[7].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
-                }
+                NewText($"{player[0].name} has died {player[0].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
+            }
+            if (player[1].active)
+            {
+                NewText($"{player[1].name} has died {player[1].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
+            }
+            if (player[2].active)
+            {
+                NewText($"{player[2].name} has died {player[2].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
+            }
+            if (player[3].active)
+            {
+                NewText($"{player[3].name} has died {player[3].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
+            }
+            if (player[4].active)
+            {
+                NewText($"{player[4].name} has died {player[4].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
+            }
+            if (player[5].active)
+            {
+                NewText($"{player[5].name} has died {player[5].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
+            }
+            if (player[6].active)
+            {
+                NewText($"{player[6].name} has died {player[6].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
+            }
+            if (Main.player[7].active)
+            {
+                NewText($"{player[7].name} has died {player[7].GetModPlayer<DeathCountPlayer>().playerDeathCount} times this session.", Color.CadetBlue);
             }
         }
     }
+    // Too lazy to fix this shit lmao
 
     internal class RarityItem : GlobalItem
     {

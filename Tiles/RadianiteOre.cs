@@ -35,6 +35,11 @@ namespace ExpiryMode.Tiles
             }
             return false;
         }
+		public override void AnimateTile(ref int frame, ref int frameCounter)
+		{
+			frame += 270;
+			frameCounter = 10;
+		}
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			r = 0.19607843137f;

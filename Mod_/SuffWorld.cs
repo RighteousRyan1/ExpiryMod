@@ -23,11 +23,19 @@ namespace ExpiryMode.Mod_
         public override void Load(TagCompound tag)
         {
             ExpiryModeIsActive = tag.GetBool("ExpiryModeIsActive");
+            playerDeathCount = tag.GetInt("playerDeathCount");
         }
         public override TagCompound Save()
         {
-            return new TagCompound 
-            { {  "ExpiryModeIsActive", ExpiryModeIsActive } };
+            return new TagCompound
+            {
+                {
+                    "ExpiryModeIsActive", ExpiryModeIsActive
+                },
+                {
+                    "playerDeathCount", playerDeathCount
+                }
+            };
         }
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {

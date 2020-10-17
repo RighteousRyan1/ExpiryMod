@@ -10,6 +10,7 @@ using System;
 using System.Globalization;
 using IL.Terraria.Utilities;
 using Microsoft.Xna.Framework.Graphics;
+using System.Security.AccessControl;
 
 namespace ExpiryMode.NPCs.Friendly
 {
@@ -94,6 +95,9 @@ namespace ExpiryMode.NPCs.Friendly
         {
             return base.SpawnNPC(tileX, tileY);
         }
+        public override void FindFrame(int frameHeight)
+        {
+        }
         public override void AI()
         {
             if (npc.velocity.X > 0)
@@ -106,8 +110,6 @@ namespace ExpiryMode.NPCs.Friendly
                 npc.spriteDirection = 1;
                 npc.direction = 1;
             }
-            //if (npc.life == npc.lifeMax)
-            //{
             npc.ai[0]++;
             if (npc.ai[0] != 0)
             {

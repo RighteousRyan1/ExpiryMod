@@ -56,6 +56,6 @@ namespace ExpiryMode.Global_
             if (player.HasItem(ItemType<PocketWorkBenches>()))
                 tiles.Add(TileID.WorkBenches);
             return tiles.ToArray();
-        }*/
+        }*/ // Just some shits to work on later, i guess?
     }
 }

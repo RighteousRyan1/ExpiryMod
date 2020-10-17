@@ -186,7 +186,7 @@ namespace ExpiryMode.Mod_
                     item.useAnimation = 85;
                     item.useTime = 85;
                 }
-            }
+			}
             else if (!igniter)
             {
                 //player.HeldItem.reuseDelay = player.HeldItem.GetGlobalItem<OnTerrariaHook>().defReuseDelayInt;
@@ -280,6 +280,10 @@ namespace ExpiryMode.Mod_
         }
         public override void PostUpdate()
         {
+            if (player.CountItem(ItemID.MusketBall, 200) >= 200)
+            {
+                hasVeteranMoveInRequirement = true;
+            }
             if (NPC_RepulseLocally)
             {
                 for (int i = 0; i < 180; i++)

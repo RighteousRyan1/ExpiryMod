@@ -5,11 +5,12 @@ using ReLogic.Reflection;
 using System;
 using Microsoft.Xna.Framework;
 using Terraria;
-using ExpiryMode.Items.Useables;
-using Terraria.ID;
 
 namespace ExpiryMode.Util
 {
+    /// <summary>
+    /// Water, Lava, Honey
+    /// </summary>
     public class LiquidID
     {
         /// <summary>
@@ -25,14 +26,83 @@ namespace ExpiryMode.Util
         /// </summary>
         public const int Honey = 2;
     }
-	public class ExpiryLists
-	{
+    public class DropChanceHelper
+    {
+        /// <summary>
+        /// Although does not have any of the optional said paramters for Item.NewItem, but makes it much simpler
+        /// </summary>
+        public static void OneHundredth(Vector2 pos, Vector2 randBox, int type, int stack = 1)
+        {
+            if (Main.rand.NextFloat() < 0.01)
+            {
+                Item.NewItem(pos, randBox, type, stack);
+            }
+        }
+        /// <summary>
+        /// Although does not have any of the optional said paramters for Item.NewItem, but makes it much simpler
+        /// </summary>
+        public static void OneTwentyeth(Vector2 pos, Vector2 randBox, int type, int stack = 1)
+        {
+            if (Main.rand.NextFloat() < 0.05)
+            {
+                Item.NewItem(pos, randBox, type, stack);
+            }
+        }
+        /// <summary>
+        /// Although does not have any of the optional said paramters for Item.NewItem, but makes it much simpler
+        /// </summary>
+        public static void OneTenth(Vector2 pos, Vector2 randBox, int type, int stack = 1)
+        {
+            if (Main.rand.NextFloat() < 0.1)
+            {
+                Item.NewItem(pos, randBox, type, stack);
+            }
+        }
+        /// <summary>
+        /// Although does not have any of the optional said paramters for Item.NewItem, but makes it much simpler
+        /// </summary>
+        public static void FifteenPercent(Vector2 pos, Vector2 randBox, int type, int stack = 1)
+        {
+            if (Main.rand.NextFloat() < 0.15)
+            {
+                Item.NewItem(pos, randBox, type, stack);
+            }
+        }
+        /// <summary>
+        /// Although does not have any of the optional said paramters for Item.NewItem, but makes it much simpler
+        /// </summary>
+        public static void OneFourth(Vector2 pos, Vector2 randBox, int type, int stack = 1)
+        {
+            if (Main.rand.NextFloat() < 0.25)
+            {
+                Item.NewItem(pos, randBox, type, stack);
+            }
+        }
+        /// <summary>
+        /// Although does not have any of the optional said paramters for Item.NewItem, but makes it much simpler
+        /// </summary>
+        public static void FiftyFifty(Vector2 pos, Vector2 randBox, int type, int stack = 1)
+        {
+            if (Main.rand.NextFloat() < 0.5)
+            {
+                Item.NewItem(pos, randBox, type, stack);
+            }
+        }
+    }
+    /// <summary>
+    /// Lists for enemies, etc
+    /// </summary>
+    public class ExpiryLists
+    {
         List<int> RadioactiveEnemies = new List<int> // Completely unfinished :byeah:
         {
             NPCType<RadioactiveSlime>(),
             NPCType<RadioactiveZombie>()
         };
-	}
+    }
+    /// <summary>
+    /// AI Style ID for NPCs
+    /// </summary>
 	public class NPCAIStyleID
 	{
 		public const short None = 0;
@@ -453,12 +523,25 @@ namespace ExpiryMode.Util
         public const short DD2Victory = 146;
     }
     /// <summary>
-    /// A simple, easy way of using Linear Interpolation to take 2 colors and change them over X frames.
+    /// Help with colors
     /// </summary>
 	public class ColorHelper
     {
         public static Color BrightChartreuse = new Color(173, 204, 182);
         public static Color DarkPurple = new Color(57, 0, 138);
+        /// <summary>
+        /// A simple, easy way of using Linear Interpolation to take 2 colors and change them over X frames.
+        /// </summary>
+        /// <param name="firstColor">
+        /// The first color to appear in the sequence, as the sine wave starts here
+        /// </param>
+        /// <param name="secondColor">
+        /// The second color, or the one that appears after the sequence reaches that color after the first
+        /// </param>
+        /// <param name="transitionTime">
+        /// The float of how many ticks it takes to transition between firstColor and secondColor
+        /// </param>
+        /// <returns> A swap between firstColor and secondColor </returns>
         public static Color ColorSwitcher(Color firstColor, Color secondColor, float transitionTime)
         {
             return Color.Lerp(firstColor, secondColor, (float)(Math.Sin(Main.GameUpdateCount / transitionTime) + 1f) / 2f);
@@ -469,6 +552,18 @@ namespace ExpiryMode.Util
     /// </summary>
     public class SimpleMath
     {
+        /// <summary>
+        /// Clamps 2 floats together to get a potential value of (x * Clamp (y, i, j)
+        /// </summary>
+        /// <param name="x"> Your clamp intializer </param>
+        /// <param name="y"> value </param>
+        /// <param name="i"> min </param>
+        /// <param name="j"> max </param>
+        /// <returns></returns>
+        public static float FindNextRound(float x, float y, float i, float j)
+        {
+            return x * MathHelper.Clamp(y, i, j);
+        }
         /// <summary>
         /// Finds the Cube Root of X specified
         /// </summary>
@@ -496,21 +591,21 @@ namespace ExpiryMode.Util
         {
             return Math.Floor(Math.Pow(x, 1 / 3));
         }
-		/// <summary>
-		/// (WIP) Makes a Sine Wave
-		/// </summary>
-		public static void SineWave()
+        /// <summary>
+        /// (WIP) Makes a Sine Wave
+        /// </summary>
+        public static void SineWave()
         {
-			Player player = Main.player[Main.myPlayer];
-			int rate = 8000;
-			short[] buffer = new short[8000];
-			double amp = 0.25 * short.MaxValue;
-			double freq = 1000;
+            Player player = Main.player[Main.myPlayer];
+            int rate = 8000;
+            short[] buffer = new short[8000];
+            double amp = 0.25 * short.MaxValue;
+            double freq = 1000;
             for (int n = 0; n < buffer.Length; n++)
             {
-                buffer[n] = (short)(amp * Math.Sin((2 * Math.PI * n * freq) / rate));
+                buffer[n] = (short)(amp * Math.Sin(2 * Math.PI * n * freq / rate));
             }
-		}
+        }
         /// <summary>
         /// Finds a close random of X specified, and Y is the amount of change allowed.
         /// </summary>
@@ -548,15 +643,16 @@ namespace ExpiryMode.Util
     }
 	public class UsefulUtils
     {
-		/// <summary>
-		/// Creates a slight offset when making Vector2 offsets.
-		/// Mainly used for convenience
-		/// </summary>
-		/// <param name="y"> Your slight Y offset</param>
-		/// <returns>an int</returns>
-		public static Vector2? SlightYOffset(int y)
+        /// <summary>
+        /// Creates a slight offset when making Vector2 offsets.
+        /// Mainly used for convenience
+        /// </summary>
+        /// <param name="y"> Your slight Y offset</param>
+        /// <returns>an int</returns>
+        public static Vector2? SlightYOffset(int y)
         {
-			return new Vector2(0, y);
+            return new Vector2(0, y);
         }
+        // Tell me the point of this again????
     }
 }

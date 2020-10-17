@@ -6,9 +6,12 @@ using Terraria.ID;
 using Microsoft.Xna.Framework;
 using System.Threading.Tasks;
 using ExpiryMode.Mod_;
+using System;
 
 namespace ExpiryMode.Mod_
 {
+    // AWhatever - Inverse of tan, sin, cos (get angle of square root of tan, sin, cos)
+
     public class DeathCountPlayer : ModPlayer
     {
         public int playerDeathCount;
