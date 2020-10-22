@@ -159,7 +159,7 @@ namespace ExpiryMode.Mod_
             {
                 item.autoReuse = true;
             }
-            else if (!bumpStock && player.HeldItem.type > ItemID.None)
+            else if (!bumpStock && isGun && player.HeldItem.type > ItemID.None)
             {
                 player.HeldItem.autoReuse = player.HeldItem.GetGlobalItem<OnTerrariaHook>().defAutoReuse;
             }

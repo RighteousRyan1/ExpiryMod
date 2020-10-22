@@ -1,7 +1,7 @@
 using ExpiryMode.Buffs.GoodBuffs;
+using ExpiryMode.Items.Materials;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 
 namespace ExpiryMode.Items.Potions
 {
@@ -25,14 +25,14 @@ namespace ExpiryMode.Items.Potions
             item.height = 28;
             item.value = 3213;
             item.rare = ItemRarityID.LightRed;
-            item.buffType = BuffType<PurityBuff>();
+            item.buffType = ModContent.BuffType<PurityBuff>();
             item.buffTime = 28800;
         }
 		public override void AddRecipes() 
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.BottledWater, 1);
-			recipe.AddIngredient(null, "BunnyEar", 3);
+			recipe.AddIngredient(ModContent.ItemType<BunnyEar>(), 3);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

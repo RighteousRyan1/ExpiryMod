@@ -1,6 +1,6 @@
 displayName = Expiry Mod (Beta)
 author = Ryan and the Dev Team
-version = 0.3.5.2
+version = 0.3.6.1
 buildIgnore = *.csproj, *user, obj\*, bin\* .vs\*
 showRecources = false
 ignorePDB = true
