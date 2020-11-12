@@ -63,11 +63,16 @@ namespace ExpiryMode.Mod_
     {
         #region Difficulty Enhancers
         public override ConfigScope Mode => ConfigScope.ServerSide;
-        [Header("[c/FF0000:Difficulty Enhancers]")]
+        [Header("[c/FF0000:Difficulty Changers]")]
         [Label("Good Biome Buffs")]
         [DefaultValue(true)]
         [Tooltip("Toggles the good buffs you get from biomes. Affects all players.")]
         public bool noGoodBuffs;
+
+        [Label("Toggle Radiation Gen")]
+        [DefaultValue(false)]
+        [Tooltip("Toggles generation of the radiation biome\nBE AWARE: This means that you cannot get ANY loot from the biome. Toggle at your own risk.")]
+        public bool noRadGen;
 
         [Label("Realistic Space")]
         [DefaultValue(false)]

@@ -348,7 +348,7 @@ namespace ExpiryMode.Global_
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.CultistBossBag, 1);
             }
         }
-        public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+        /*public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
         {
             if (SuffWorld.ExpiryModeIsActive)
             {
@@ -363,7 +363,7 @@ namespace ExpiryMode.Global_
                     maxSpawns = maxSpawns * 1;
                 }
             }
-        }
+        }*/ // FIXME: This bug must be handled
         public override bool Autoload(ref string name)
         {
             return mod.Properties.Autoload;

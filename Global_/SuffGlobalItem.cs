@@ -403,6 +403,7 @@ namespace ExpiryMode.Global_
                     armorShaderDye.Shader.Parameters["uSourceRect"].SetValue(new Vector4(0, 0, nameStringDimensions.X, nameStringDimensions.Y));
                     armorShaderDye.Shader.Parameters["uImageSize0"].SetValue(new Vector2(nameStringDimensions.X, nameStringDimensions.Y));
                     armorShaderDye.Apply(null);
+                    Main.spriteBatch.End();
                     // If there's going to be a lot of rarity shaders, these should probably be moved to a separate method.
                 }
             }
@@ -417,6 +418,7 @@ namespace ExpiryMode.Global_
                     armorShaderDye.Shader.Parameters["uSourceRect"].SetValue(new Vector4(0, 0, nameStringDimensions.X, nameStringDimensions.Y));
                     armorShaderDye.Shader.Parameters["uImageSize0"].SetValue(new Vector2(nameStringDimensions.X, nameStringDimensions.Y));
                     armorShaderDye.Apply(null);
+                    Main.spriteBatch.End();
                 }
             }
             if (item.rare == ExpiryRarity.VortexRarity)
@@ -430,6 +432,7 @@ namespace ExpiryMode.Global_
                     armorShaderDye.Shader.Parameters["uSourceRect"].SetValue(new Vector4(0, 0, nameStringDimensions.X, nameStringDimensions.Y));
                     armorShaderDye.Shader.Parameters["uImageSize0"].SetValue(new Vector2(nameStringDimensions.X, nameStringDimensions.Y));
                     armorShaderDye.Apply(null);
+                    Main.spriteBatch.End();
                 }
             }
             return true;
@@ -445,6 +448,7 @@ namespace ExpiryMode.Global_
                     // Begin the spriteBatch again so the rest of the tooltips can be drawn.
                     // These begin parameters can be found in Main.MouseTextHackZoom() before the tooltips are drawn.
                     Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    Main.spriteBatch.End();
                 }
             }
             if (item.rare == ExpiryRarity.PrismaticRarity)
@@ -456,6 +460,7 @@ namespace ExpiryMode.Global_
                     // Begin the spriteBatch again so the rest of the tooltips can be drawn.
                     // These begin parameters can be found in Main.MouseTextHackZoom() before the tooltips are drawn.
                     Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    Main.spriteBatch.End();
                 }
             }
             if (item.rare == ExpiryRarity.VortexRarity)
@@ -467,6 +472,7 @@ namespace ExpiryMode.Global_
                     // Begin the spriteBatch again so the rest of the tooltips can be drawn.
                     // These begin parameters can be found in Main.MouseTextHackZoom() before the tooltips are drawn.
                     Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    Main.spriteBatch.End();
                 }
             }
         }

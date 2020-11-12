@@ -294,11 +294,13 @@ namespace ExpiryMode.Mod_
                         string itemName = itemText[itemTextIndex].name;
                         spriteBatch.End();
                         spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, UIScaleMatrix);
-                        ArmorShaderData armorShaderDye = GameShaders.Armor.GetShaderFromItemId(ItemID.AcidDye);
+                        //ArmorShaderData armorShaderDye = GameShaders.Armor.GetShaderFromItemId(ItemID.AcidDye);
+                        ArmorShaderData armorShaderDye = GameShaders.Armor.GetShaderFromItemId(ModLoader.GetMod("MetEx").ItemType("LightToDarkDye"));
                         Vector2 nameStringDimensions = ChatManager.GetStringSize(fontMouseText, itemName, Vector2.One);
                         armorShaderDye.Shader.Parameters["uSourceRect"].SetValue(new Vector4(0, 0, nameStringDimensions.X, nameStringDimensions.Y));
                         armorShaderDye.Shader.Parameters["uImageSize0"].SetValue(new Vector2(nameStringDimensions.X, nameStringDimensions.Y));
                         armorShaderDye.Apply(null);
+                        spriteBatch.End();
                     }
                     if (rarityText[itemTextIndex].rare == ExpiryRarity.PrismaticRarity && !itemText[itemTextIndex].coinText)
                     {
@@ -310,6 +312,7 @@ namespace ExpiryMode.Mod_
                         armorShaderDye.Shader.Parameters["uSourceRect"].SetValue(new Vector4(0, 0, nameStringDimensions.X, nameStringDimensions.Y));
                         armorShaderDye.Shader.Parameters["uImageSize0"].SetValue(new Vector2(nameStringDimensions.X, nameStringDimensions.Y));
                         armorShaderDye.Apply(null);
+                        spriteBatch.End();
                     }
                     if (rarityText[itemTextIndex].rare == ExpiryRarity.VortexRarity && !itemText[itemTextIndex].coinText)
                     {
@@ -321,6 +324,7 @@ namespace ExpiryMode.Mod_
                         armorShaderDye.Shader.Parameters["uSourceRect"].SetValue(new Vector4(0, 0, nameStringDimensions.X, nameStringDimensions.Y));
                         armorShaderDye.Shader.Parameters["uImageSize0"].SetValue(new Vector2(nameStringDimensions.X, nameStringDimensions.Y));
                         armorShaderDye.Apply(null);
+                        spriteBatch.End();
                     }
                 }
             );
@@ -334,16 +338,19 @@ namespace ExpiryMode.Mod_
                     {
                         spriteBatch.End();
                         spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, UIScaleMatrix);
+                        spriteBatch.End();
                     }
                     if (rarityText[itemTextIndex].rare == ExpiryRarity.PrismaticRarity && !itemText[itemTextIndex].coinText)
                     {
                         spriteBatch.End();
                         spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, UIScaleMatrix);
+                        spriteBatch.End();
                     }
                     if (rarityText[itemTextIndex].rare == ExpiryRarity.VortexRarity && !itemText[itemTextIndex].coinText)
                     {
                         spriteBatch.End();
                         spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, UIScaleMatrix);
+                        spriteBatch.End();
                     }
                 }
             );
@@ -421,10 +428,6 @@ namespace ExpiryMode.Mod_
                 else
                 {
                     stopTitleMusic = true;
-                }
-                if (GetInstance<ExpiryConfigClientSide>().MusicChange)
-                {
-
                 }
                 customTitleMusicSlot = 6;
                 Music music2 = GetMusic("Sounds/Music/CreepyMusic");

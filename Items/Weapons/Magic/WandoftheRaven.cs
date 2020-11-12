@@ -40,18 +40,6 @@ namespace ExpiryMode.Items.Weapons.Magic
             item.reuseDelay = 8;
             Item.staff[item.type] = true;
         }
-        /*public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
-        {
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-            GameShaders.Armor[GameShaders.Armor].Apply()
-            return true;
-        }
-        public override void PostDrawTooltipLine(DrawableTooltipLine line)
-        {
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin();  // stevie, dont mind this, working on my shader rarity
-        }*/
         public override Vector2? HoldoutOffset()
         {
             return new Vector2(0, 0);
