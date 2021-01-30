@@ -103,5 +103,3 @@ namespace ExpiryMode.Items.Weapons.ExpiryExclusive
         }
     }
 }
-			
-			

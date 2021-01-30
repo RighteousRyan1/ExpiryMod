@@ -34,6 +34,7 @@ namespace ExpiryMode.Mod_
     public class ExpiryModeMod : Mod
     {
         public bool MagnetRange_IsInfinite = false;
+		
         private bool stopTitleMusic;
         private ManualResetEvent titleMusicStopped;
         private int customTitleMusicSlot;
@@ -226,7 +227,7 @@ namespace ExpiryMode.Mod_
             {
                 rarityText[i] = new RarityPopupText();
             }
-            On.Terraria.Item.Prefix += Item_Prefix;
+            On.Terraria.Item.Prefix += Item_Prefix; // These might be a major issue
             On.Terraria.ItemText.NewText += ItemText_NewText;
             On.Terraria.Main.MouseText += Main_MouseText;
             On.Terraria.ItemText.Update += ItemText_Update;
@@ -943,123 +944,6 @@ namespace ExpiryMode.Mod_
             }
         }
     }
-        public class HurtSelf : ModCommand
-        {
-            public override CommandType Type
-                => CommandType.Chat;
-
-            public override string Command
-                => "hurt";
-
-            public override string Usage
-                => "/hurt <damage>";
-
-            public override string Description
-                => "Hurt yourself for any amount of damage";
-
-            public override void Action(CommandCaller caller, string input, string[] args)
-            {
-                Player player = Main.player[myPlayer];
-                var damageAmount = args[0];
-                if (!int.TryParse(args[0], out int type))
-                {
-                    if (type == 0)
-                    {
-                        throw new UsageException($"{damageAmount} is not a valid integer.");
-                    }
-                }
-
-                int damage = 1;
-                if (args.Length >= 2)
-                {
-                    damage = int.Parse(args[1]);
-                }
-                if (!player.HasItem(ItemType<CommandItem>()))
-                {
-                    NewText("This command can only be used while debugging!", Color.Red);
-                }
-                if (player.HasItem(ItemType<CommandItem>()))
-                {
-                    caller.Player.Hurt(PlayerDeathReason.ByCustomReason($"{player.name} hurt themself a bit too much."), type, 0, false, false, false, -1);
-                }
-            }
-        }
-    public class SetMaxLife : ModCommand
-    {
-        public override CommandType Type
-            => CommandType.Chat;
-
-        public override string Command
-            => "lifeSet";
-
-        public override string Usage
-            => "/lifeSet <life>";
-
-        public override string Description
-            => "Set your max life";
-
-        public override void Action(CommandCaller caller, string input, string[] args)
-        {
-            Player player = Main.player[myPlayer];
-            var lifeAmt = args[0];
-            if (!int.TryParse(args[0], out int type))
-            {
-                if (type == 0)
-                {
-                    throw new UsageException($"{lifeAmt} is not a valid integer.");
-                }
-            }
-            int lifeInt = 1;
-            if (args.Length >= 2)
-            {
-                lifeInt = int.Parse(args[1]);
-            }
-            if (!player.HasItem(ItemType<CommandItem>()))
-            {
-                NewText("This command can only be used while debugging!", Color.Red);
-            }
-            if (player.HasItem(ItemType<CommandItem>()))
-            {
-                player.statLifeMax = type;
-            }
-
-        }
-    }
-    /// <summary>
-    /// Rename yourself!
-    /// </summary>
-    public class Rename : ModCommand
-    {
-        public override CommandType Type
-            => CommandType.Chat;
-
-        public override string Command
-            => "rename";
-
-        public override string Usage
-            => "/rename <string>";
-
-        public override string Description
-            => "change your name"
-                + "\n Use $ to represent spaces.";
-        public override void Action(CommandCaller caller, string input, string[] args)
-        {
-            if (!int.TryParse(args[0], out int type))
-            {
-                Player player = Main.player[myPlayer];
-                var name = args[0].Replace("$", " ");
-                //var name = args[0];
-                string nameSet = "";
-                if (args.Length >= 2)
-                {
-                    nameSet = int.Parse(args[1]).ToString();
-                }
-                NewText($"Your old name was {player.name}.", ColorHelper.ColorSwitcher(Color.DarkBlue, Color.Aqua, 20f));
-                player.name = name;
-                NewText($"Now your name has been changed to {name}.", ColorHelper.ColorSwitcher(Color.Aqua, Color.DarkBlue, 20f));
-            }
-        }
-    }
     /// <summary>
     /// Enables and disables Expiry Mode upon use with the debugging item in your inventory.
     /// </summary>
@@ -1093,32 +977,6 @@ namespace ExpiryMode.Mod_
                 {
                     ExpiryModeIsActive = true;
                     NewText("Expiry Mode has successfully been enabled.", Color.Orange);
-                }
-            }
-        }
-        public class Heal : ModCommand
-        {
-            public override CommandType Type
-                => CommandType.Chat;
-
-            public override string Command
-                => "heal";
-
-            public override string Usage
-                => "/heal";
-
-            public override string Description
-                => "Heals you back to full health";
-
-            public override void Action(CommandCaller caller, string input, string[] args)
-            {
-                Player player = Main.player[myPlayer];
-                if (!player.HasItem(ItemType<CommandItem>()))
-                    NewText("This command can only be used while debugging!", Color.Red);
-                if (player.HasItem(ItemType<CommandItem>()))
-                {
-                    caller.Player.statLife = player.statLifeMax2;
-                    NewText("You have been healed.", Color.Coral);
                 }
             }
         }

@@ -34,14 +34,6 @@ namespace ExpiryMode.Items.Useables
             item.channel = true;
             item.noMelee = true;
         }
-        /*public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            Player player = Main.player[Main.myPlayer];
-                tooltips.Add(new TooltipLine(mod, "ItemName", "This is your item!")
-                {
-                    text = $"You are holding a '{player.HeldItem.Name}'!"
-                });
-        }*/ // I got bored, ok?
         public override bool AltFunctionUse(Player player)
         {
             return true;
