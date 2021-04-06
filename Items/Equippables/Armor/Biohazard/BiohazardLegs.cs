@@ -21,7 +21,8 @@ namespace ExpiryMode.Items.Equippables.Armor.Biohazard
             item.width = 18;
             item.height = 18;
             item.value = 12314;
-            item.rare = ExpiryRarity.AcidicRarity;
+            // item.rare = ExpiryRarity.AcidicRarity;
+			item.rare = ItemRarityID.Orange;
             item.defense = 9;
         }
         public override void AddRecipes()

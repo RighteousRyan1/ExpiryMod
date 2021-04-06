@@ -1,5 +1,6 @@
 using Terraria.ModLoader;
 using ExpiryMode.Global_;
+using Terraria.ID;
 
 namespace ExpiryMode.Items.Equippables.Vanity.MonstrousGrim
 {
@@ -17,7 +18,8 @@ namespace ExpiryMode.Items.Equippables.Vanity.MonstrousGrim
             item.width = 18;
             item.height = 18;
             item.value = 12314;
-            item.rare = ExpiryRarity.VortexRarity;
+            // item.rare = ExpiryRarity.VortexRarity;
+			item.rare = ItemRarityID.Blue;
             item.vanity = true;
         }
     }

@@ -4,6 +4,7 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using ExpiryMode.Util;
 using ExpiryMode.Mod_;
+using Terraria.ID;
 
 namespace ExpiryMode.Items.Equippables.Vanity.Prismatic
 {
@@ -32,7 +33,8 @@ namespace ExpiryMode.Items.Equippables.Vanity.Prismatic
 			item.width = 18;
 			item.height = 18;
 			item.value = 12317;
-			item.rare = ExpiryRarity.PrismaticRarity;
+			// item.rare = ExpiryRarity.PrismaticRarity;
+			item.rare = ItemRarityID.Expert;
 			item.vanity = true;
 		}
 	}

@@ -29,7 +29,8 @@ namespace ExpiryMode.Items.Weapons.Swords
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.knockBack = 6;
 			item.value = 10000;
-			item.rare = ExpiryRarity.AcidicRarity;
+			// item.rare = ExpiryRarity.AcidicRarity;
+			item.rare = ItemRarityID.Orange;
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = true;
 			item.useTurn = true;

@@ -30,7 +30,8 @@ namespace ExpiryMode.Items.Weapons.Magic
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.noMelee = true;
             item.value = 10000;
-            item.rare = ExpiryRarity.AcidicRarity;
+            // item.rare = ExpiryRarity.AcidicRarity;
+			item.rare = ItemRarityID.Orange;
             item.UseSound = SoundID.Item73;
             item.autoReuse = true;
             item.shoot = ProjectileType<BiohazardBird>();

@@ -21,7 +21,8 @@ namespace ExpiryMode.Items.Equippables.Vanity.Prismatic
             item.width = 18;
             item.height = 18;
             item.value = 12314;
-            item.rare = ExpiryRarity.PrismaticRarity;
+            // item.rare = ExpiryRarity.PrismaticRarity;
+			item.rare = ItemRarityID.Expert;
             item.vanity = true;
         }
         public override void UpdateEquip(Player player)

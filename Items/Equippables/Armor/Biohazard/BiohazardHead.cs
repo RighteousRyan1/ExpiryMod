@@ -22,7 +22,8 @@ namespace ExpiryMode.Items.Equippables.Armor.Biohazard
 			item.width = 18;
 			item.height = 18;
 			item.value = 12342;
-            item.rare = ExpiryRarity.AcidicRarity;
+            // item.rare = ExpiryRarity.AcidicRarity;
+			item.rare = ItemRarityID.Orange;
             item.defense = 10;
 		}
         public override void DrawHair(ref bool drawHair, ref bool drawAltHair)

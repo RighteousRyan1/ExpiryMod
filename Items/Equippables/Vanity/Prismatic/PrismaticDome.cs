@@ -4,6 +4,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework;
 using ExpiryMode.Mod_;
+using Terraria.ID;
 
 namespace ExpiryMode.Items.Equippables.Vanity.Prismatic
 {
@@ -21,7 +22,8 @@ namespace ExpiryMode.Items.Equippables.Vanity.Prismatic
             item.width = 18;
             item.height = 18;
             item.value = 12342;
-            item.rare = ExpiryRarity.PrismaticRarity;
+            // item.rare = ExpiryRarity.PrismaticRarity;
+			item.rare = ItemRarityID.Expert;
             item.vanity = true;
         }
         public override void UpdateEquip(Player player)

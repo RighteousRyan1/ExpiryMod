@@ -28,7 +28,8 @@ namespace ExpiryMode.Items.Weapons.Bows
 			item.noMelee = true;
 			item.knockBack = 4;
 			item.value = 10000;
-			item.rare = ExpiryRarity.AcidicRarity;
+			// item.rare = ExpiryRarity.AcidicRarity;
+			item.rare = ItemRarityID.Orange;
 			item.UseSound = SoundID.Item99;
 			item.autoReuse = true;
 			item.shoot = ProjectileType<BiohazardBird>();
